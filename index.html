@@ -321,17 +321,17 @@
             text-decoration: underline;
         }
 
-        /* Confirmation Message */
-        .confirmation-message {
+        /* Error Message */
+        .error-message {
             display: none;
-            background: rgba(0, 168, 107, 0.9); /* Matches #00A86B */
+            background: rgba(255, 0, 0, 0.9);
             padding: 20px;
             border-radius: 10px;
             margin-top: 20px;
             text-align: center;
         }
 
-        .confirmation-message p {
+        .error-message p {
             font-size: 1.2em;
         }
 
@@ -466,7 +466,7 @@
         <h2>Be the First to Save</h2>
         <p>First 500 get 3 months free premium!</p>
         <div class="waitlist-form">
-            <form id="waitlist-form" action="https://c3a57ce2.sibforms.com/serve/MUIFAP8PmeZG3YWWRs18IvjC7RNKAO_4pJEgCjCnrvjqyrxD33bh5Oq6r64sBfbbs7oUG3tNl_9ph73SsnXnTZ1o2XrGYFvNcFNJ6FdxhIklfYO54zprXT7uZmXmQWRxEm7Qf8FNYpQNi4lswTnb1Xw5Zcm52jD5BSvx1v3ivciOMDJ4pndSTia3TtZmCNQlflRpzar3TyWlr3_s" method="post">
+            <form id="waitlist-form">
                 <input type="email" name="EMAIL" placeholder="Your email" required>
                 <input type="text" name="NAME" placeholder="Your name (optional)">
                 <input type="text" name="POSTCODE" placeholder="Postcode (optional)">
@@ -476,8 +476,8 @@
                 </div>
                 <button type="submit">Join Now</button>
             </form>
-            <div id="confirmation-message" class="confirmation-message">
-                <p>Thank you for signing up! Your waitlist registration is confirmed.</p>
+            <div id="error-message" class="error-message">
+                <p>Sorry, there was an error. Please check your input and try again.</p>
             </div>
             <p>GDPR-compliant. Unsubscribe anytime.</p>
             <a href="#" id="open_preferences_center">Update cookies preferences</a>
@@ -533,12 +533,43 @@
             starsContainer.appendChild(star);
         }
 
-        // Form Submission Confirmation
-        document.getElementById('waitlist-form').addEventListener('submit', function(event) {
-            // Prevent default form submission for demo; actual submission happens via Brevo
-            // Show confirmation message and hide form
-            document.getElementById('waitlist-form').style.display = 'none';
-            document.getElementById('confirmation-message').style.display = 'block';
+        // Form Submission to Brevo API
+        document.getElementById('waitlist-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = {
+                email: formData.get('EMAIL'),
+                attributes: {
+                    NAME: formData.get('NAME') || '',
+                    POSTCODE: formData.get('POSTCODE') || ''
+                },
+                listIds: [7], // Replace with your Brevo list ID (e.g., 7)
+                updateEnabled: true,
+                emailBlacklisted: false,
+                smsBlacklisted: false
+            };
+
+            try {
+                const response = await fetch('https://api.brevo.com/v3/contacts', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'api-key': 'YOUR_BREVO_API_KEY' // Replace with your Brevo API key
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    window.location.href = '/confirmation'; // Redirect to confirmation page
+                } else {
+                    document.getElementById('error-message').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('error-message').style.display = 'block';
+            }
         });
 
         // Google Analytics
