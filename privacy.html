@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnerShift - Privacy Policy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        * {margin: 0;padding: 0;box-sizing: border-box;font-family: 'Sora', sans-serif;font-weight: 300;color: #FFFFFF;line-height: 2.5;}
+        body {background-color: #000000;scroll-behavior: smooth;}
+        .stars {position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: #000000;z-index: -1;overflow: hidden;}
+        .star {position: absolute;background: #00A86B;border-radius: 50%;animation: twinkle 2.5s infinite alternate;}
+        @keyframes twinkle {0% {opacity: 0.3;transform: scale(0.5);}100% {opacity: 1;transform: scale(1);}}
+        .container {max-width: 800px;margin: 0 auto;padding: 60px 20px;}
+        h1 {font-size: 2.5em;font-weight: 400;margin-bottom: 20px;color: #00A86B;}
+        h2 {font-size: 1.8em;font-weight: 400;margin-top: 30px;margin-bottom: 10px;}
+        p, ul {font-size: 1.1em;}
+        a {color: #00A86B;text-decoration: none;}
+        a:hover {text-decoration: underline;}
+        footer {background-color: rgba(0, 0, 0, 0.8);text-align: center;padding: 20px;font-size: 0.9em;}
+        footer a {color: #00A86B;margin: 0 10px;}
+        @media (max-width: 768px) {h1 {font-size: 2em;}h2 {font-size: 1.5em;}p, ul {font-size: 1em;}}
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="container">
+        <h1>Privacy Policy for EnerShift</h1>
+        <p>Last Updated: December 14, 2025</p>
+        <p>EnerShift.co.uk is committed to protecting your privacy in compliance with UK GDPR and the Data Protection Act 2018.</p>
+
+        <h2>Data We Collect</h2>
+        <ul>
+            <li><strong>Quote Requests:</strong> Email (required), name/postcode/bill details (optional).</li>
+            <li><strong>Website:</strong> Cookies for analytics (Google Analytics, optional with consent).</li>
+        </ul>
+
+        <h2>How We Use Your Data</h2>
+        <ul>
+            <li>Processing quote requests and providing energy savings options (Sender.net, EU servers).</li>
+            <li>Analytics to improve services (Google Analytics, anonymized).</li>
+        </ul>
+
+        <h2>Data Retention</h2>
+        <p>We retain quote data until processed or you unsubscribe. Analytics data is kept for 26 months.</p>
+
+        <h2>Your Rights</h2>
+        <ul>
+            <li>Access, correct, or delete your data.</li>
+            <li>Opt out of non-essential cookies or data sharing.</li>
+            <li>Contact: <a href="mailto:privacy@enershift.co.uk">privacy@enershift.co.uk</a>.</li>
+        </ul>
+
+        <h2>Data Security</h2>
+        <ul>
+            <li>Encrypted storage (Sender.net, hosting provider).</li>
+            <li>SSL encryption via Let’s Encrypt.</li>
+        </ul>
+
+        <h2>Third Parties</h2>
+        <ul>
+            <li>Sender.net (forms, EU-compliant).</li>
+            <li>Google Analytics (analytics, opt-in).</li>
+        </ul>
+
+        <h2>Contact</h2>
+        <p>Email: <a href="mailto:privacy@enershift.co.uk">privacy@enershift.co.uk</a>.</p>
+        <p>See <a href="https://ico.org.uk">ICO.org.uk</a> for complaints.</p>
+    </div>
+
+    <footer>
+        <p><a href="/">Home</a> | <a href="/privacy.html">Privacy Policy</a></p>
+        <p>&copy; 2025 EnerShift. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const starsContainer = document.getElementById('stars');
+        const numStars = 50;
+        for (let i = 0; i < numStars; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = `${Math.random() * 3 + 1}px`;
+            star.style.height = star.style.width;
+            star.style.left = `${Math.random() * 100}vw`;
+            star.style.top = `${Math.random() * 100}vh`;
+            star.style.animationDelay = `${Math.random() * 2.5}s`;
+            starsContainer.appendChild(star);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Confirmation for your energy quote request at EnerShift.">
+    <title>EnerShift - Quote Confirmation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {margin: 0;padding: 0;box-sizing: border-box;font-family: 'Sora', sans-serif;font-weight: 300;color: #FFFFFF;line-height: 2.5;}
+        body {background-color: #000000;overflow-x: hidden;}
+        .stars {position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: #000000;z-index: -1;overflow: hidden;}
+        .star {position: absolute;background: #00A86B;border-radius: 50%;animation: twinkle 2.5s infinite alternate;}
+        @keyframes twinkle {0% {opacity: 0.3;transform: scale(0.5);}100% {opacity: 1;transform: scale(1);}}
+        .confirmation {max-width: 800px;margin: 0 auto;padding: 120px 20px;text-align: center;min-height: 100vh;display: flex;flex-direction: column;justify-content: center;}
+        .confirmation h1 {font-size: 32px;font-weight: 400;color: #00A86B;margin-bottom: 20px;text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);}
+        .confirmation p {font-size: 1.3em;max-width: 600px;margin: 0 auto 20px;}
+        .cta-button {display: inline-block;padding: 12px 30px;background-color: #00A86B;text-decoration: none;border-radius: 50px;transition: background-color 0.3s, transform 0.2s;}
+        .cta-button:hover {background-color: #008b56;transform: scale(1.05);}
+        footer {background-color: rgba(0, 0, 0, 0.8);text-align: center;padding: 20px;font-size: 0.9em;}
+        footer a {color: #00A86B;text-decoration: none;margin: 0 10px;}
+        footer a:hover {text-decoration: underline;}
+        @media (max-width: 768px) {.confirmation h1 {font-size: 24px;}.confirmation p {font-size: 1.1em;}}
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <section class="confirmation">
+        <h1>Thank You for Your Quote Request!</h1>
+        <p>Please check your email (including spam/junk) for confirmation. We'll review your details and get back with personalized savings options soon.</p>
+        <a href="/" class="cta-button">Return to Home</a>
+        <p style="margin-top: 30px;">Share with friends for referral bonuses!</p>
+        <div style="margin-top: 20px;">
+          <a href="https://x.com/intent/tweet?text=Save%20on%20energy%20with%20EnerShift%20in%20NW%20UK!%20https://enershift.co.uk" target="_blank" style="margin: 10px; color: #00A86B;"><i class="fab fa-x-twitter fa-2x"></i></a>
+          <a href="https://instagram.com/EnerShift" target="_blank" style="margin: 10px; color: #00A86B;"><i class="fab fa-instagram fa-2x"></i></a>
+        </div>
+    </section>
+
+    <footer>
+        <p><a href="/privacy.html">Privacy Policy</a> | <a href="https://x.com/EnerShift" target="_blank">@EnerShift on X</a> | <a href="https://tiktok.com/@EnerShift" target="_blank">TikTok</a> | <a href="https://instagram.com/EnerShift" target="_blank">Instagram</a></p>
+        <p>We’re GDPR-compliant. See our <a href="/privacy.html">Privacy Policy</a>.</p>
+        <p>&copy; 2025 EnerShift. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const starsContainer = document.getElementById('stars');
+        const numStars = 50;
+        for (let i = 0; i < numStars; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = `${Math.random() * 3 + 1}px`;
+            star.style.height = star.style.width;
+            star.style.left = `${Math.random() * 100}vw`;
+            star.style.top = `${Math.random() * 100}vh`;
+            star.style.animationDelay = `${Math.random() * 2.5}s`;
+            starsContainer.appendChild(star);
+        }
+    </script>
+</body>
+</html>
