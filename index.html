@@ -62,12 +62,17 @@
     #error-message {color: #ff4d4d;font-size: 0.9rem;margin-top: 0.5rem;display: none;text-align: center;}
     footer {background: rgba(0, 0, 0, 0.8);padding: 1rem;text-align: center;}
     footer a {color: #00A86B;margin: 0 0.5rem;}
+    footer p.disclaimer {font-size: 0.8rem; margin-top: 1rem; color: #ccc;}
     @media (max-width: 768px) {
       .hero h1 {font-size: 1.8rem;}.hero p {font-size: 1rem;}.hero::before {font-size: 5rem;}
       .feature-container, .step-container {flex-direction: column;align-items: center;}
       .feature-item, .step-item {max-width: 300px;}
     }
     @media (prefers-reduced-motion) {.hero button {animation: none;}.star {animation: none;opacity: 0.6;}}
+    /* Savings Calculator Styles */
+    .calculator-section {max-width: 600px; margin: 20px auto; padding: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+    .calculator-section input, .calculator-section button {display: block; width: 100%; margin: 10px 0; padding: 10px; background: #333; color: #fff; border: 1px solid #00A86B;}
+    #savings-result {margin-top: 20px; font-weight: bold; color: #00A86B;}
   </style>
   <script type="application/ld+json">
 {
@@ -131,6 +136,14 @@
       <div class="step-item"><i class="fas fa-search-dollar fa-2x"></i><h3>Step 2: We Compare & Quote</h3><p>Get best tariff switches & solar/battery options in minutes.</p></div>
       <div class="step-item"><i class="fas fa-handshake fa-2x"></i><h3>Step 3: Switch & Save</h3><p>We handle the switch – you start saving immediately.</p></div>
     </div>
+    <!-- Added Savings Calculator Section -->
+    <div class="calculator-section">
+      <h3 style="font-weight: 400; text-align: center; margin-bottom: 1rem;">Quick Savings Calculator</h3>
+      <input type="number" id="annualBill" placeholder="Your annual energy bill (£)" min="0">
+      <input type="number" id="roofSize" placeholder="Roof size (sqm)" min="0">
+      <button onclick="calculateSavings()">Calculate Savings</button>
+      <div id="savings-result"></div>
+    </div>
   </section>
 
   <section id="contact" class="container form-section">
@@ -147,6 +160,7 @@
     <a href="https://www.instagram.com/enershift_/" target="_blank" rel="noopener noreferrer">Instagram</a>
     <a href="/privacy.html" style="color: #00A86B;">Privacy Policy</a>
     <a href="mailto:hello@enershift.energy">Contact</a>
+    <p class="disclaimer">EnerShift is an independent referral service. We earn commissions from partners on successful referrals. Not yet regulated by Ofgem (registration transitional). Always verify directly with suppliers/installers.</p>
   </footer>
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-MTLYJ50J7F"></script>
@@ -187,9 +201,15 @@
       star.style.animationDelay = Math.random() * 5 + 's';
       starsContainer.appendChild(star);
     }
+
+    // Savings Calculator Script
+    function calculateSavings() {
+      const bill = parseFloat(document.getElementById('annualBill').value) || 0;
+      const roof = parseFloat(document.getElementById('roofSize').value) || 0;
+      const savings = Math.min(bill * 0.3, roof * 20); // Simple formula: 30% bill savings, £20/sqm solar value
+      document.getElementById('savings-result').innerText = `Estimated Annual Savings: £${savings.toFixed(0)}`;
+    }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
