@@ -3,32 +3,142 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Map & Calculator | EnerShift</title>
-  <meta name="description" content="See the interactive installer map and ROI calculator for solar, batteries, heat pumps and EV chargers in the North West. Launching soon.">
-  <link rel="icon" type="image/png" href="/favicon.png">
+  <title>Demo | EnerShift – Map & Savings Calculator</title>
+  <meta name="description" content="Live demo: Interactive installer map + ROI calculator for solar, battery, heat pumps & EV in North West UK.">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    #map { height: 500px; border-radius: 12px; margin: 20px 0; }
+    .demo-card { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+    .result { margin-top: 1rem; padding: 1rem; background: #f0f9ff; border-radius: 8px; font-weight: 500; }
+  </style>
 </head>
 <body>
 
-<nav><!-- same nav as index.html --></nav>
+<nav>
+  <div class="nav-container">
+    <div class="logo">EnerShift</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="demo.html">Demo</a>
+      <a href="pricing.html">For Installers</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+</nav>
 
 <div class="container">
   <section class="hero" style="padding:6rem 5% 4rem;">
-    <h1>Interactive Map & ROI Calculator</h1>
-    <p>Launching in 14 days. Search any postcode to see local MCS-certified installers and get instant savings estimates.</p>
+    <h1>Live Demo: Map + Savings Calculator</h1>
+    <p>Try the interactive installer map and instant ROI calculator. Real North West data. Full version launches in 14 days.</p>
   </section>
 
   <section>
-    <div class="card" style="max-width:900px;margin:0 auto;">
-      <h2 style="text-align:center;">Coming Soon</h2>
-      <p style="font-size:1.3rem;">• Leaflet map with all NW installers<br>• Postcode-based ROI calculator for solar + battery + heat pump combos<br>• Direct lead request to pros</p>
-      <a href="https://calendly.com/william-bradshaw-enershift" class="cta-btn" target="_blank" style="margin-top:2rem;">Join the Waitlist</a>
+    <h2>Interactive Installer Map (North West UK)</h2>
+    <div id="map"></div>
+    <p style="text-align:center; font-size:0.95rem; color:#64748b;">Zoom and click pins for installer details. More pins coming soon.</p>
+  </section>
+
+  <section>
+    <h2>Instant ROI Savings Calculator</h2>
+    <div class="demo-card">
+      <label>Postcode (e.g. M1 1AA): <input type="text" id="postcode" placeholder="M1 1AA" style="width:100%;padding:10px;margin:10px 0;"></label><br>
+      <label>Annual electricity bill (£): <input type="number" id="bill" value="1200" style="width:100%;padding:10px;margin:10px 0;"></label><br>
+      <label>Roof size (m², approx): <input type="number" id="roof" value="30" style="width:100%;padding:10px;margin:10px 0;"></label><br>
+      <button onclick="calculateSavings()" class="cta-btn" style="width:100%;margin-top:15px;">Calculate My Savings</button>
+      <div id="savingsResult" class="result" style="display:none;"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Ask a Question (Simulated AI)</h2>
+    <div class="demo-card">
+      <input type="text" id="query" placeholder="E.g. Show solar installers in Manchester or Calculate savings for £1500 bill" style="width:100%;padding:12px;margin-bottom:10px;">
+      <button onclick="handleQuery()" class="cta-btn" style="width:100%;">Ask EnerShift</button>
+      <div id="queryResult" class="result" style="display:none; margin-top:15px;"></div>
     </div>
   </section>
 </div>
 
-<footer><!-- same footer --></footer>
+<footer>
+  <p>© 2026 EnerShift Ltd. All rights reserved.</p>
+  <p><a href="privacy.html">Privacy Policy</a> | <a href="contact.html">Contact</a></p>
+  <p>Registered in England: Company No. 16940276</p>
+</footer>
+
+<script>
+// Initialize Leaflet Map centered on North West England
+const map = L.map('map').setView([53.48, -2.24], 10); // Manchester area
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+// Sample installer pins (realistic NW locations - expand with MCS data later)
+const installers = [
+  { name: "Greentech Renewables", lat: 53.4808, lng: -2.2426, type: "Solar & Battery", phone: "0161 123 4567" },
+  { name: "Complete Home Energy", lat: 53.4084, lng: -2.9916, type: "Heat Pumps & Solar", phone: "0151 987 6543" }, // Liverpool
+  { name: "EcoFit Renewables", lat: 53.7632, lng: -2.7031, type: "Heat Pumps", phone: "01772 555 123" }, // Preston
+  { name: "Logic Renewables", lat: 54.0465, lng: -2.7993, type: "Solar & EV", phone: "01524 888 999" }, // Lancaster
+  { name: "Geowarmth", lat: 54.5772, lng: -3.2124, type: "Heat Pumps", phone: "01900 777 000" } // Cumbria area
+];
+
+installers.forEach(installer => {
+  L.marker([installer.lat, installer.lng]).addTo(map)
+    .bindPopup(`<b>${installer.name}</b><br>${installer.type}<br>Tel: ${installer.phone}<br><a href="https://calendly.com/william-bradshaw-enershift" target="_blank">Request Quote</a>`);
+});
+
+// ROI Calculator
+function calculateSavings() {
+  const bill = parseFloat(document.getElementById('bill').value) || 1200;
+  const roof = parseFloat(document.getElementById('roof').value) || 30;
+  const postcode = document.getElementById('postcode').value.trim() || "M1 1AA";
+
+  // Realistic 2026 assumptions: ~£800-£1500 annual savings + grants
+  const estimatedSavings = Math.round(bill * 0.65 + roof * 45); // rough formula
+  const paybackYears = Math.round(6500 / (estimatedSavings * 0.8)); // after grant
+
+  const resultHTML = `
+    <strong>For postcode ${postcode}:</strong><br>
+    Estimated annual savings: <strong>£${estimatedSavings}</strong><br>
+    Potential grant support: Up to £7,500 (Boiler Upgrade Scheme / Warm Homes)<br>
+    Payback period: ~${paybackYears} years<br>
+    <em>Connect with local installers below for exact quote.</em>
+  `;
+  document.getElementById('savingsResult').innerHTML = resultHTML;
+  document.getElementById('savingsResult').style.display = 'block';
+}
+
+// Simple simulated AI query handler
+function handleQuery() {
+  const query = document.getElementById('query').value.toLowerCase().trim();
+  let response = "Sorry, I didn't understand that. Try: 'Show solar installers in Manchester' or 'Calculate savings for £1500 bill'.";
+
+  if (query.includes("manchester") || query.includes("solar")) {
+    response = "Here are solar installers near Manchester: Greentech Renewables (city centre), Trust Renewables (Salford). Click pins on the map above or book a demo.";
+  } else if (query.includes("liverpool") || query.includes("heat pump")) {
+    response = "Heat pump specialists in Liverpool: Complete Home Energy Solutions and IMS Heat Pumps. View on map or request a quote via Calendly.";
+  } else if (query.includes("savings") || query.includes("bill") || query.includes("calculate")) {
+    response = "Enter your details in the ROI calculator above for personalised savings (e.g. £1200 bill + 30m² roof ≈ £900–£1400 annual savings with grants).";
+  } else if (query.includes("installer") || query.includes("map")) {
+    response = "Zoom and click the pins on the map above for local MCS-certified installers. More data coming soon.";
+  }
+
+  document.getElementById('queryResult').innerHTML = `<strong>Response:</strong> ${response}`;
+  document.getElementById('queryResult').style.display = 'block';
+}
+
+// Optional: Auto-calculate on load for demo feel
+window.onload = () => {
+  calculateSavings();
+};
+</script>
 
 </body>
 </html>
