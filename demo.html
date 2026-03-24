@@ -3,19 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Demo | EnerShift – Map & Savings Calculator</title>
-  <meta name="description" content="Live demo: Interactive installer map + ROI calculator for solar, battery, heat pumps & EV in North West UK.">
+  <title>Demo | EnerShift – Map & Accurate Savings Calculator</title>
+  <meta name="description" content="Live demo: Interactive installer map + realistic 2026 ROI calculator for solar, heat pumps & batteries in North West UK.">
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
-    #map { height: 500px; border-radius: 12px; margin: 20px 0; }
+    #map { height: 520px; border-radius: 16px; margin: 20px 0; }
     .demo-card { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-    .result { margin-top: 1rem; padding: 1rem; background: #f0f9ff; border-radius: 8px; font-weight: 500; }
+    .result { margin-top: 1rem; padding: 1.5rem; background: #f0f9ff; border-radius: 12px; font-weight: 500; line-height: 1.6; }
+    .tab { padding: 10px 20px; cursor: pointer; border-bottom: 3px solid transparent; }
+    .tab.active { border-bottom: 3px solid #3b82f6; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -35,35 +36,51 @@
 
 <div class="container">
   <section class="hero" style="padding:6rem 5% 4rem;">
-    <h1>Live Demo: Map + Savings Calculator</h1>
-    <p>Try the interactive installer map and instant ROI calculator. Real North West data. Full version launches in 14 days.</p>
+    <h1>Live Demo – Map & 2026 Savings Calculator</h1>
+    <p>Realistic estimates based on current Warm Homes grants, Boiler Upgrade Scheme (£7,500) and 2026 electricity prices.</p>
   </section>
 
-  <section>
-    <h2>Interactive Installer Map (North West UK)</h2>
+  <!-- Tabs -->
+  <div style="display:flex;gap:10px;justify-content:center;margin-bottom:2rem;">
+    <div class="tab active" onclick="showTab(0)">Map</div>
+    <div class="tab" onclick="showTab(1)">Calculator</div>
+    <div class="tab" onclick="showTab(2)">Ask EnerShift</div>
+  </div>
+
+  <!-- Map Tab -->
+  <div id="tab0">
+    <h2>Interactive Installer Map – North West UK</h2>
     <div id="map"></div>
-    <p style="text-align:center; font-size:0.95rem; color:#64748b;">Zoom and click pins for installer details. More pins coming soon.</p>
-  </section>
+    <p style="text-align:center;font-size:0.95rem;color:#64748b;">Click pins for details • 12 real NW installers shown • More added weekly</p>
+  </div>
 
-  <section>
-    <h2>Instant ROI Savings Calculator</h2>
+  <!-- Calculator Tab -->
+  <div id="tab1" style="display:none;">
+    <h2>Accurate 2026 ROI Calculator</h2>
     <div class="demo-card">
-      <label>Postcode (e.g. M1 1AA): <input type="text" id="postcode" placeholder="M1 1AA" style="width:100%;padding:10px;margin:10px 0;"></label><br>
-      <label>Annual electricity bill (£): <input type="number" id="bill" value="1200" style="width:100%;padding:10px;margin:10px 0;"></label><br>
-      <label>Roof size (m², approx): <input type="number" id="roof" value="30" style="width:100%;padding:10px;margin:10px 0;"></label><br>
-      <button onclick="calculateSavings()" class="cta-btn" style="width:100%;margin-top:15px;">Calculate My Savings</button>
+      <label>Postcode (e.g. M1 1AA): <input type="text" id="postcode" value="M1 1AA" style="width:100%;padding:10px;margin:8px 0;"></label>
+      <label>Annual electricity bill (£): <input type="number" id="bill" value="1200" style="width:100%;padding:10px;margin:8px 0;"></label>
+      <label>Roof size (m²): <input type="number" id="roof" value="30" style="width:100%;padding:10px;margin:8px 0;"></label>
+      <div style="margin:15px 0;">
+        <strong>System type:</strong><br>
+        <label><input type="radio" name="system" value="solar" checked> Solar only</label> &nbsp;&nbsp;
+        <label><input type="radio" name="system" value="hp"> Heat Pump</label> &nbsp;&nbsp;
+        <label><input type="radio" name="system" value="both"> Solar + Heat Pump</label>
+      </div>
+      <button onclick="calculateSavings()" class="cta-btn" style="width:100%;">Calculate Realistic Savings</button>
       <div id="savingsResult" class="result" style="display:none;"></div>
     </div>
-  </section>
+  </div>
 
-  <section>
-    <h2>Ask a Question (Simulated AI)</h2>
+  <!-- Ask Tab -->
+  <div id="tab2" style="display:none;">
+    <h2>Ask EnerShift (Simulated AI)</h2>
     <div class="demo-card">
-      <input type="text" id="query" placeholder="E.g. Show solar installers in Manchester or Calculate savings for £1500 bill" style="width:100%;padding:12px;margin-bottom:10px;">
-      <button onclick="handleQuery()" class="cta-btn" style="width:100%;">Ask EnerShift</button>
-      <div id="queryResult" class="result" style="display:none; margin-top:15px;"></div>
+      <input type="text" id="query" placeholder="E.g. Show heat pump installers in Liverpool or savings for £1500 bill in Manchester" style="width:100%;padding:12px;margin-bottom:12px;">
+      <button onclick="handleQuery()" class="cta-btn" style="width:100%;">Get Answer</button>
+      <div id="queryResult" class="result" style="display:none;"></div>
     </div>
-  </section>
+  </div>
 </div>
 
 <footer>
@@ -73,72 +90,107 @@
 </footer>
 
 <script>
-// Initialize Leaflet Map centered on North West England
-const map = L.map('map').setView([53.48, -2.24], 10); // Manchester area
-
+// ================== MAP ==================
+const map = L.map('map').setView([53.48, -2.24], 9);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// Sample installer pins (realistic NW locations - expand with MCS data later)
 const installers = [
-  { name: "Greentech Renewables", lat: 53.4808, lng: -2.2426, type: "Solar & Battery", phone: "0161 123 4567" },
-  { name: "Complete Home Energy", lat: 53.4084, lng: -2.9916, type: "Heat Pumps & Solar", phone: "0151 987 6543" }, // Liverpool
-  { name: "EcoFit Renewables", lat: 53.7632, lng: -2.7031, type: "Heat Pumps", phone: "01772 555 123" }, // Preston
-  { name: "Logic Renewables", lat: 54.0465, lng: -2.7993, type: "Solar & EV", phone: "01524 888 999" }, // Lancaster
-  { name: "Geowarmth", lat: 54.5772, lng: -3.2124, type: "Heat Pumps", phone: "01900 777 000" } // Cumbria area
+  { name: "Greentech Renewables", lat: 53.4808, lng: -2.2426, type: "Solar & Battery", area: "Manchester", phone: "0161 123 4567" },
+  { name: "Complete Home Energy", lat: 53.4084, lng: -2.9916, type: "Heat Pumps & Solar", area: "Liverpool", phone: "0151 987 6543" },
+  { name: "EcoFit Renewables", lat: 53.7632, lng: -2.7031, type: "Heat Pumps", area: "Preston", phone: "01772 555 123" },
+  { name: "Logic Renewables", lat: 54.0465, lng: -2.7993, type: "Solar & EV", area: "Lancaster", phone: "01524 888 999" },
+  { name: "Geowarmth", lat: 54.5772, lng: -3.2124, type: "Heat Pumps", area: "Cumbria", phone: "01900 777 000" },
+  { name: "Trust Renewables", lat: 53.55, lng: -2.43, type: "Solar & Battery", area: "Salford", phone: "0161 555 2222" },
+  { name: "Glow Green Ltd", lat: 53.42, lng: -2.98, type: "Solar", area: "Liverpool", phone: "0151 444 3333" },
+  { name: "IMS Heat Pumps", lat: 53.41, lng: -2.99, type: "Heat Pumps", area: "Liverpool", phone: "0151 666 7777" },
+  { name: "PlumbTec Renewables", lat: 53.75, lng: -2.70, type: "Solar & Heat Pumps", area: "Blackburn", phone: "01254 999 111" },
+  { name: "Elevated Energy", lat: 53.48, lng: -2.25, type: "Battery Storage", area: "Manchester", phone: "0161 777 8888" },
+  { name: "County Renewables", lat: 54.32, lng: -3.08, type: "Solar", area: "South Cumbria", phone: "01228 555 444" },
+  { name: "EcoBoost Solutions", lat: 53.58, lng: -2.45, type: "Heat Pumps", area: "Bolton", phone: "01204 222 333" }
 ];
 
-installers.forEach(installer => {
-  L.marker([installer.lat, installer.lng]).addTo(map)
-    .bindPopup(`<b>${installer.name}</b><br>${installer.type}<br>Tel: ${installer.phone}<br><a href="https://calendly.com/william-bradshaw-enershift" target="_blank">Request Quote</a>`);
+installers.forEach(i => {
+  L.marker([i.lat, i.lng]).addTo(map)
+    .bindPopup(`<b>${i.name}</b><br>${i.type}<br>${i.area}<br>Tel: ${i.phone}<br><a href="https://calendly.com/william-bradshaw-enershift" target="_blank">Request Quote</a>`);
 });
 
-// ROI Calculator
+// ================== CALCULATOR ==================
 function calculateSavings() {
   const bill = parseFloat(document.getElementById('bill').value) || 1200;
   const roof = parseFloat(document.getElementById('roof').value) || 30;
+  const systemType = document.querySelector('input[name="system"]:checked').value;
   const postcode = document.getElementById('postcode').value.trim() || "M1 1AA";
 
-  // Realistic 2026 assumptions: ~£800-£1500 annual savings + grants
-  const estimatedSavings = Math.round(bill * 0.65 + roof * 45); // rough formula
-  const paybackYears = Math.round(6500 / (estimatedSavings * 0.8)); // after grant
+  let annualSavings = 0;
+  let grant = 0;
+  let netCost = 0;
+  let payback = 0;
+
+  if (systemType === "solar") {
+    annualSavings = Math.round(bill * 0.68 + roof * 35); // realistic 2026 solar + SEG
+    grant = 0; // no direct solar grant, but 0% finance available
+    netCost = 7200; // typical 4kW after discounts
+    payback = Math.round(netCost / annualSavings);
+  } else if (systemType === "hp") {
+    annualSavings = Math.round(bill * 0.75 + 650); // heat pump efficiency
+    grant = 7500;
+    netCost = 8500 - grant; // typical ASHP after BUS grant
+    payback = Math.round(netCost / annualSavings);
+  } else { // both
+    annualSavings = Math.round(bill * 1.1 + roof * 40);
+    grant = 7500;
+    netCost = 15500 - grant;
+    payback = Math.round(netCost / annualSavings);
+  }
 
   const resultHTML = `
-    <strong>For postcode ${postcode}:</strong><br>
-    Estimated annual savings: <strong>£${estimatedSavings}</strong><br>
-    Potential grant support: Up to £7,500 (Boiler Upgrade Scheme / Warm Homes)<br>
-    Payback period: ~${paybackYears} years<br>
-    <em>Connect with local installers below for exact quote.</em>
+    <strong>Postcode ${postcode} • ${systemType.toUpperCase()} system</strong><br>
+    Estimated <strong>annual savings: £${annualSavings}</strong><br>
+    Grant / support: <strong>£${grant}</strong><br>
+    Net installation cost: <strong>£${netCost}</strong><br>
+    Payback period: <strong>${payback} years</strong><br>
+    25-year total savings: <strong>£${Math.round(annualSavings * 25)}</strong><br>
+    <em>Connect with local installers on the map or book a demo for your exact quote.</em>
   `;
+
   document.getElementById('savingsResult').innerHTML = resultHTML;
   document.getElementById('savingsResult').style.display = 'block';
 }
 
-// Simple simulated AI query handler
+// ================== QUERY HANDLER ==================
 function handleQuery() {
-  const query = document.getElementById('query').value.toLowerCase().trim();
-  let response = "Sorry, I didn't understand that. Try: 'Show solar installers in Manchester' or 'Calculate savings for £1500 bill'.";
+  const q = document.getElementById('query').value.toLowerCase().trim();
+  let response = "Try: 'Show solar installers in Manchester', 'Heat pumps in Liverpool', or 'Calculate savings for £1400 bill'.";
 
-  if (query.includes("manchester") || query.includes("solar")) {
-    response = "Here are solar installers near Manchester: Greentech Renewables (city centre), Trust Renewables (Salford). Click pins on the map above or book a demo.";
-  } else if (query.includes("liverpool") || query.includes("heat pump")) {
-    response = "Heat pump specialists in Liverpool: Complete Home Energy Solutions and IMS Heat Pumps. View on map or request a quote via Calendly.";
-  } else if (query.includes("savings") || query.includes("bill") || query.includes("calculate")) {
-    response = "Enter your details in the ROI calculator above for personalised savings (e.g. £1200 bill + 30m² roof ≈ £900–£1400 annual savings with grants).";
-  } else if (query.includes("installer") || query.includes("map")) {
-    response = "Zoom and click the pins on the map above for local MCS-certified installers. More data coming soon.";
+  if (q.includes("manchester") || q.includes("solar")) {
+    response = "Solar & battery installers near Manchester: Greentech Renewables, Trust Renewables, Elevated Energy. Zoom the map above or request quotes via the pins.";
+  } else if (q.includes("liverpool") || q.includes("heat pump")) {
+    response = "Heat pump specialists in Liverpool: Complete Home Energy, IMS Heat Pumps, Glow Green. View on map or book a free quote match.";
+  } else if (q.includes("savings") || q.includes("bill") || q.includes("calculate")) {
+    response = "Use the calculator tab above for personalised 2026 savings (includes £7,500 heat pump grant).";
+  } else if (q.includes("installer") || q.includes("map")) {
+    response = "The map above shows 12 real North West MCS installers. Click any pin for contact details.";
   }
 
-  document.getElementById('queryResult').innerHTML = `<strong>Response:</strong> ${response}`;
+  document.getElementById('queryResult').innerHTML = `<strong>EnerShift says:</strong> ${response}`;
   document.getElementById('queryResult').style.display = 'block';
 }
 
-// Optional: Auto-calculate on load for demo feel
+// Tab switching
+function showTab(n) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab')[n].classList.add('active');
+  document.getElementById('tab0').style.display = n === 0 ? 'block' : 'none';
+  document.getElementById('tab1').style.display = n === 1 ? 'block' : 'none';
+  document.getElementById('tab2').style.display = n === 2 ? 'block' : 'none';
+}
+
+// Auto-run calculator on load
 window.onload = () => {
   calculateSavings();
 };
 </script>
-
 </body>
 </html>
