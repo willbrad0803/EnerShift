@@ -1,17 +1,11 @@
 # EnerShift
 
-AI-powered local intelligence platform for North West UK.
+The energy transition directory for the North West UK.
 
-Conversational agents + maps for councils, chambers, and manufacturers.
+Interactive map of installers + ROI calculator + lead marketplace for solar, batteries, heat pumps and EV chargers.
 
-## Tech Stack (planned)
-- Frontend: Static HTML/CSS (GitHub Pages)
-- Backend/MVP: LangChain + Groq/Anthropic + Supabase
-- Data: Open UK gov / Ordnance Survey
+Built in Manchester/Liverpool – bootstrapped, fast-moving, revenue-first.
 
-## Setup
-1. Clone repo
-2. Enable GitHub Pages in Settings → Pages → main branch
-3. Custom domain: enershift.energy (redirect old if needed)
+Live at: https://enershift.energy
 
-Contact: hello@enershift.energy
+Tech: Static HTML/CSS + planned Flask backend + Leaflet maps + public MCS/open data.
