@@ -19,7 +19,7 @@
     .tab.active { border-bottom: 3px solid #3b82f6; font-weight: 600; }
     .match-btn { background: #10b981; color: white; font-weight: 600; }
     .match-btn:hover { background: #059669; }
-    input, button { min-height: 48px; } /* Better mobile touch targets */
+    input, button { min-height: 48px; }
   </style>
 </head>
 <body>
@@ -96,7 +96,7 @@
 </footer>
 
 <script>
-// ================== MAP (mobile-optimised) ==================
+// ================== MAP ==================
 const map = L.map('map', { touchZoom: true, tap: true }).setView([53.48, -2.24], 9);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
@@ -135,7 +135,7 @@ installers.forEach(i => {
     .bindPopup(`<b>${i.name}</b><br>${i.type}<br>${i.area}<br><a href="https://calendly.com/william-bradshaw-enershift" target="_blank">Request Quote</a>`);
 });
 
-// ================== ACCURATE CALCULATOR + MATCH BUTTON ==================
+// ================== CALCULATOR ==================
 function calculateSavings() {
   const bill = parseFloat(document.getElementById('bill').value) || 1000;
   const roof = parseFloat(document.getElementById('roof').value) || 30;
@@ -192,8 +192,8 @@ function calculateSavings() {
   document.getElementById('savingsResult').style.display = 'block';
 }
 
-// Groq AI (replace YOUR_GROQ_API_KEY_HERE with your real key)
-const GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE";
+// ================== GROQ AI (your key is already added) ==================
+const GROQ_API_KEY = "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";
 
 async function handleQuery() {
   const query = document.getElementById('query').value.trim();
@@ -227,7 +227,7 @@ async function handleQuery() {
     const data = await res.json();
     resultDiv.innerHTML = `<strong>EnerShift AI:</strong> ${data.choices[0].message.content}`;
   } catch (e) {
-    resultDiv.innerHTML = `<strong>EnerShift AI:</strong> Sorry, API error (check your Groq key).`;
+    resultDiv.innerHTML = `<strong>EnerShift AI:</strong> Sorry, API error. Check your Groq key or try again later.`;
   }
 }
 
