@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-16 max-w-4xl mx-auto">
+  <h1 class="text-4xl font-bold text-center mb-12">Live Demo – Coming Soon</h1>
+  
+  <div class="bg-white rounded-3xl shadow p-12 text-center">
+    <p class="text-2xl mb-8">Enter any North West postcode and see:</p>
+    <ul class="text-left max-w-md mx-auto space-y-4 text-lg">
+      <li>✓ Tomorrow’s wind surplus hours</li>
+      <li>✓ Recommended load shifting times</li>
+      <li>✓ Estimated bill savings + flexibility earnings</li>
+      <li>✓ Simple rules you can apply today</li>
+    </ul>
+    <button onclick="alert('The full interactive dashboard with real Elexon BMRS + Open-Meteo data is the next major feature we will build.')" 
+            class="cta-btn mt-12">Try Forecast Demo</button>
+  </div>
+
+  <div class="text-center mt-20">
+    <a href="/" class="cta-btn">Back to Home</a>
+  </div>
+</div>
+{% endblock %}

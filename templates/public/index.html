@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section - Clean and broad -->
+<section class="bg-gradient-to-br from-[var(--dark)] to-[#1e3a2f] text-white py-28">
+  <div class="max-w-5xl mx-auto px-6 text-center">
+    <h1 class="text-5xl md:text-6xl font-bold tracking-tight mb-6">
+      Energy Flexibility OS
+    </h1>
+    <p class="text-2xl md:text-3xl max-w-3xl mx-auto mb-10">
+      Automatically shift your load to windy hours.<br>
+      Earn from BiTraDER, DFS and the Balancing Mechanism.<br>
+      Cut energy bills 15–30%.
+    </p>
+    <a href="https://calendly.com/william-bradshaw-enershift" 
+       target="_blank"
+       class="inline-block bg-[var(--primary)] hover:bg-emerald-600 text-white font-semibold px-10 py-5 rounded-2xl text-xl transition">
+      Book Free 60-day Pilot Call
+    </a>
+  </div>
+</section>
+
+<!-- Map Section -->
+<section id="map" class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold mb-4">Live Wind & Price Forecast</h2>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        See when renewable energy is abundant and cheap. Get automated load shift recommendations.
+      </p>
+    </div>
+    <div id="map" class="w-full h-[500px] rounded-3xl shadow-xl border border-gray-200"></div>
+  </div>
+</section>
+
+<!-- Calculator -->
+<section id="calculator" class="py-20 bg-gray-100">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold mb-4">How Much Could You Earn?</h2>
+      <p class="text-lg text-gray-600">Instant estimate for your site – warehouses, supermarkets, industrials and more.</p>
+    </div>
+    
+    <div class="bg-white rounded-3xl shadow p-10">
+      <button onclick="alert('Full interactive calculator with real-time wind forecasts and earnings estimates coming soon!')" 
+              class="cta-btn w-full py-5 text-lg">
+        Calculate My Flexibility Earnings
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Footer is already in base.html -->
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const mapEl = document.getElementById('map');
+    if (mapEl) {
+      var map = L.map(mapEl).setView([53.48, -2.24], 9);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+      L.marker([53.48, -2.24]).addTo(map).bindPopup('UK Flexibility Opportunities');
+    }
+  });
+</script>
+{% endblock %}

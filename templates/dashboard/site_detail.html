@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-[var(--light)] py-12">
+  <div class="max-w-5xl mx-auto px-8">
+    <a href="{% url 'dashboard_home' %}" class="inline-flex items-center text-gray-500 hover:text-[var(--primary)] mb-10">
+      ← Back to Dashboard
+    </a>
+
+    <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+      <!-- Header -->
+      <div class="px-10 pt-10 pb-8 border-b flex justify-between items-start">
+        <div>
+          <h1 class="text-4xl font-bold">{{ site.name }}</h1>
+          <p class="text-xl text-gray-500 mt-2">{{ site.postcode }} • {{ site.get_industry_type_display }}</p>
+        </div>
+        <form method="post" action="{% url 'delete_site' site.id %}" 
+              onsubmit="return confirm('Delete this site and all its data?');">
+          {% csrf_token %}
+          <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-2xl text-sm font-medium">
+            Delete Site
+          </button>
+        </form>
+      </div>
+
+      <!-- Forecast Section -->
+      <div class="p-10">
+        <div class="flex justify-between items-center mb-10">
+          <h2 class="text-3xl font-semibold text-emerald-700">Tomorrow's Forecast & Recommendations</h2>
+          <a href="{% url 'site_detail' site.id %}" 
+             class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-6 py-3 rounded-2xl text-sm font-medium transition">
+            ↻ Refresh Forecast
+          </a>
+        </div>
+
+        <!-- Recommendation Box -->
+        <div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-8 mb-12">
+          <p class="text-lg leading-relaxed text-gray-700">{{ recommendation }}</p>
+        </div>
+
+        <!-- Estimated Earnings -->
+        <div class="bg-white border border-gray-200 rounded-3xl p-8 mb-12">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-sm text-gray-500">Estimated Flexibility Earnings</p>
+              <p class="text-4xl font-bold text-emerald-600">{{ estimated_earnings }}</p>
+            </div>
+            <div class="text-right text-sm text-gray-500">
+              Last updated: {{ last_updated }}
+            </div>
+          </div>
+        </div>
+
+        <!-- High Wind Periods -->
+        {% if forecast_data %}
+        <h3 class="text-2xl font-semibold mb-8">High Wind Periods (Next 48 Hours)</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+          {% for hour in forecast_data %}
+          <div class="bg-white border border-gray-200 rounded-3xl p-8 text-center hover:shadow-md transition">
+            <div class="text-5xl font-bold text-emerald-600 mb-1">{{ hour.wind_speed }}</div>
+            <div class="text-sm text-gray-500">m/s</div>
+            <div class="mt-4 font-mono text-lg text-gray-600">{{ hour.time }}</div>
+            <div class="mt-6 text-xs font-medium px-5 py-2 bg-emerald-100 text-emerald-700 rounded-full inline-block">
+              Good for shifting
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-16 max-w-5xl mx-auto">
+  <h1 class="text-4xl font-bold text-center mb-4">Simple Pricing for Energy Flexibility</h1>
+  <p class="text-center text-xl text-gray-600 mb-16">One dashboard to cut bills and earn from flexibility markets</p>
+
+  <div class="grid md:grid-cols-3 gap-8">
+    <div class="card">
+      <h3>Starter</h3>
+      <p class="text-5xl font-bold my-6">£99<span class="text-lg font-normal">/mo</span></p>
+      <ul>
+        <li>✓ Live wind & price forecasts</li>
+        <li>✓ Basic load shift recommendations</li>
+        <li>✓ Savings & carbon reports</li>
+        <li>✓ Email alerts</li>
+      </ul>
+      <a href="/dashboard/" class="cta-btn block mt-10 text-center">Start Free Trial</a>
+    </div>
+
+    <div class="card border-2 border-[var(--primary)] scale-105">
+      <h3 class="text-[var(--primary)]">Pro (Most Popular)</h3>
+      <p class="text-5xl font-bold my-6">£299<span class="text-lg font-normal">/mo</span></p>
+      <ul>
+        <li>✓ Everything in Starter</li>
+        <li>✓ Automated rule-based shifting</li>
+        <li>✓ BiTraDER / DFS bidding support</li>
+        <li>✓ Integration with smart meters & controls</li>
+        <li>✓ Detailed ESG reporting</li>
+      </ul>
+      <a href="/dashboard/" class="cta-btn block mt-10 text-center">Start 60-day Pilot</a>
+    </div>
+
+    <div class="card">
+      <h3>Enterprise</h3>
+      <p class="text-5xl font-bold my-6">Custom</p>
+      <ul>
+        <li>✓ Full automation + API</li>
+        <li>✓ Aggregated bidding across sites</li>
+        <li>✓ Dedicated support & custom integrations</li>
+        <li>✓ Success fee option on earnings</li>
+      </ul>
+      <a href="contact.html" class="cta-btn block mt-10 text-center">Talk to Us</a>
+    </div>
+  </div>
+
+  <div class="text-center mt-16">
+    <p class="text-gray-600">Perfect for warehouses, supermarkets, data centres and community energy schemes in the ENWL region.</p>
+    <a href="/" class="text-[var(--primary)] hover:underline mt-8 inline-block">← Back to Home</a>
+  </div>
+</div>
+{% endblock %}

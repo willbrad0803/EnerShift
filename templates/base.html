@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnerShift - Energy Flexibility OS</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@2"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <link rel="stylesheet" href="{% load static %}{% static 'css/styles.css' %}">
+    
+    <script>
+        tailwind.config = {
+            content: ["./**/*.{html,js}"],
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10b981',
+                        accent: '#34d399',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-[var(--light)] text-[var(--dark)]">
+    <!-- Consistent Navbar -->
+    <nav class="bg-[var(--dark)] text-white sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <a href="/" class="flex items-center gap-3">
+                <span class="text-2xl font-bold text-[var(--primary)]">EnerShift</span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-8 text-sm">
+                <a href="/" class="hover:text-[var(--primary)] transition">Home</a>
+                <a href="/pricing.html" class="hover:text-[var(--primary)] transition">For Businesses</a>
+                <a href="/about.html" class="hover:text-[var(--primary)] transition">About</a>
+                <a href="/demo.html" class="hover:text-[var(--primary)] transition">Demo</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                {% if user.is_authenticated %}
+                <span class="text-sm text-gray-300 hidden md:inline">Welcome, {{ user.username }}</span>
+                <a href="/dashboard/" class="text-sm hover:text-[var(--primary)]">Dashboard</a>
+                <a href="/dashboard/logout/" 
+                   class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-xl text-sm font-medium transition">
+                    Logout
+                </a>
+                {% else %}
+                <a href="https://calendly.com/william-bradshaw-enershift" target="_blank" 
+                   class="cta-btn text-sm">Start Free Pilot</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <!-- Consistent Footer -->
+    <footer class="bg-[var(--dark)] text-gray-400 py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="mb-6">&copy; 2026 EnerShift</p>
+            <div class="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm">
+                <a href="/about.html" class="hover:text-white">About</a>
+                <a href="/pricing.html" class="hover:text-white">For Businesses</a>
+                <a href="/demo.html" class="hover:text-white">Demo</a>
+                <a href="/contact.html" class="hover:text-white">Contact</a>
+                <a href="/privacy.html" class="hover:text-white">Privacy</a>
+            </div>
+            <p class="text-xs mt-10 text-gray-500">Helping businesses shift load and earn from flexibility markets</p>
+        </div>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

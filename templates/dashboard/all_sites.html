@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-[var(--light)] py-12">
+  <div class="max-w-6xl mx-auto px-8">
+    <div class="flex justify-between items-center mb-12">
+      <div>
+        <h1 class="text-4xl font-bold">All Sites Overview</h1>
+        <p class="text-gray-600 mt-2">Total potential flexibility earnings across your portfolio</p>
+      </div>
+      <a href="{% url 'add_site' %}" class="cta-btn">+ Add New Site</a>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow p-12 mb-12 text-center">
+      <p class="text-sm text-gray-500">Total Potential Monthly Earnings</p>
+      <p class="text-6xl font-bold text-emerald-600 my-4">{{ total_estimated_earnings }}</p>
+      <p class="text-gray-600">Based on current wind forecasts and typical site size</p>
+    </div>
+
+    {% if sites %}
+    <h2 class="text-2xl font-semibold mb-8">Your Sites ({{ total_sites }})</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for site in sites %}
+      <a href="{% url 'site_detail' site.id %}" class="block">
+        <div class="card bg-white p-8 hover:shadow-2xl transition-all">
+          <h3 class="text-2xl font-semibold mb-3">{{ site.name }}</h3>
+          <p class="text-gray-500">{{ site.postcode }} • {{ site.get_industry_type_display }}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

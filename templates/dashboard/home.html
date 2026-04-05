@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-[var(--light)] py-12">
+  <div class="max-w-6xl mx-auto px-8">
+    <div class="flex justify-between items-center mb-12">
+      <div>
+        <h1 class="text-4xl font-bold">EnerShift Dashboard</h1>
+        <p class="text-gray-600 mt-2">Manage your sites • View wind forecasts • Get load shift recommendations</p>
+      </div>
+      <a href="{% url 'add_site' %}" class="cta-btn">+ Add New Site</a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Main Content -->
+      <div class="lg:col-span-2">
+        {% if sites %}
+          <div class="grid md:grid-cols-2 gap-8">
+            {% for site in sites %}
+            <a href="{% url 'site_detail' site.id %}" class="block">
+              <div class="card bg-white p-8 hover:shadow-2xl transition-all">
+                <h3 class="text-2xl font-semibold mb-3">{{ site.name }}</h3>
+                <p class="text-gray-500">{{ site.postcode }} • {{ site.get_industry_type_display }}</p>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="bg-white rounded-3xl shadow p-20 text-center">
+            <h2 class="text-3xl font-semibold mb-6">No sites added yet</h2>
+            <p class="text-gray-600 mb-10">Add your first site to start receiving real wind forecasts and shift recommendations.</p>
+            <a href="{% url 'add_site' %}" class="cta-btn">Add Your First Site</a>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Sidebar: Help / Getting Started -->
+      <div>
+        <div class="bg-white rounded-3xl shadow p-8">
+          <h3 class="text-xl font-semibold mb-6">Help & Getting Started</h3>
+          <div class="space-y-6 text-sm">
+            <div>
+              <p class="font-medium text-emerald-700">1. Add Sites</p>
+              <p class="text-gray-600">Add your warehouses, supermarkets or industrial sites.</p>
+            </div>
+            <div>
+              <p class="font-medium text-emerald-700">2. View Forecasts</p>
+              <p class="text-gray-600">See when wind is strong and cheap energy is available.</p>
+            </div>
+            <div>
+              <p class="font-medium text-emerald-700">3. Shift Load</p>
+              <p class="text-gray-600">Move energy-heavy processes to windy hours to save money and earn from flexibility markets.</p>
+            </div>
+          </div>
+          <a href="{% url 'all_sites_overview' %}" class="block mt-10 text-center bg-gray-100 hover:bg-gray-200 py-3 rounded-2xl text-sm font-medium">
+            View All Sites Overview
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
