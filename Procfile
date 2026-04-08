@@ -1,1 +1,1 @@
-python-3.13.12
+web: gunicorn enershift_backend.wsgi --log-file -
