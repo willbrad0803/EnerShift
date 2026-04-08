@@ -60,13 +60,13 @@ DATABASES = {
     'default': dj_database_url.config(default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'), conn_max_age=600)
 }
 
-# Static files - critical for Railway
+# === STATIC FILES - Fixed for Railway ===
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Security (softened to avoid redirect loops)
+# Security (soft for now)
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
@@ -76,5 +76,3 @@ X_FRAME_OPTIONS = 'DENY'
 
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
-
-# Remove django_htmx from MIDDLEWARE if you don't need it yet
