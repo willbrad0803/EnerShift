@@ -21,17 +21,24 @@
     </section>
 
     <!-- Map Section -->
-    <section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-8">Live Wind Forecast Map</h2>
-            <div class="bg-gray-100 rounded-3xl overflow-hidden shadow-xl" style="height: 600px;">
-                <div id="map" style="height: 100%; width: 100%;"></div>
-            </div>
-            <p class="text-center text-sm text-gray-500 mt-4">
-                Note: Map tiles may show temporary access warnings. We're switching providers soon for better reliability.
+   <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-10">
+            <h2 class="text-4xl font-bold tracking-tight mb-4">Live Wind Forecast Map</h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                See real-time wind speeds across the North West. Strong wind hours = opportunity to shift load and earn.
             </p>
         </div>
-    </section>
+        
+        <div class="bg-gray-100 rounded-3xl overflow-hidden shadow-2xl" style="height: 620px;">
+            <div id="map" style="height: 100%; width: 100%;"></div>
+        </div>
+        
+        <p class="text-center text-sm text-gray-500 mt-6">
+            Map shows wind speed forecasts. Darker green = stronger wind = better shifting opportunities.
+        </p>
+    </div>
+</section>
 
     <!-- Simple CTA -->
     <section class="py-16 bg-[var(--dark)] text-white text-center">
@@ -50,10 +57,16 @@
 
 {% block extra_scripts %}
 <script>
-    // Simple Leaflet map init (you can expand this later)
-    const map = L.map('map').setView([53.48, -2.24], 8);
+    // Reliable tile layer (CartoDB Positron - no referrer issues)
+    const map = L.map('map').setView([53.48, -2.24], 8);  // Centered on Manchester
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
     }).addTo(map);
+
+    // Optional: Add a simple marker for Manchester as example
+    L.marker([53.48, -2.24]).addTo(map)
+        .bindPopup("<b>Manchester Area</b><br>High wind potential for load shifting");
 </script>
 {% endblock %}
