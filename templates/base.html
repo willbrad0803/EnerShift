@@ -1,18 +1,31 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EnerShift - Energy Flexibility OS</title>
+    <title>EnerShift - Energy Flexibility OS for North West UK Businesses</title>
+    <meta name="description" content="Automatically shift your energy use to times when wind power is abundant and cheap. Forecast windy hours, automate load shifting, and earn from BiTraDER, DFS and flexibility markets. Simple dashboard for warehouses, factories and commercial sites.">
     
+    <!-- Open Graph / Social -->
+    <meta property="og:title" content="EnerShift - Energy Flexibility OS">
+    <meta property="og:description" content="Shift energy use to cheap green wind power and earn revenue from flexibility markets.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.enershift.energy">
+    <meta property="og:image" content="https://www.enershift.energy/static/assets/enershift-logo.png">
+
+    <link rel="icon" href="{% static 'assets/enershift-logo.png' %}">
+
+    <!-- Tailwind + Scripts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@2"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
-    <link rel="stylesheet" href="{% load static %}{% static 'css/styles.css' %}">
-    
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
     <script>
         tailwind.config = {
             content: ["./**/*.{html,js}"],
@@ -26,55 +39,39 @@
             }
         }
     </script>
-    
-    {% block extra_head %}{% endblock %}
 </head>
 <body class="bg-[var(--light)] text-[var(--dark)]">
-    <!-- Consistent Navbar -->
+    <!-- Navbar -->
     <nav class="bg-[var(--dark)] text-white sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-            <a href="/" class="flex items-center gap-3">
-                <span class="text-2xl font-bold text-[var(--primary)]">EnerShift</span>
-            </a>
-            
-            <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center gap-8 text-sm">
+            <div class="flex items-center gap-3">
+                <img src="{% static 'assets/enershift-logo.png' %}" alt="EnerShift Logo" class="h-10 w-auto">
+                <span class="text-2xl font-bold tracking-tight">EnerShift</span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium">
                 <a href="/" class="hover:text-[var(--primary)] transition">Home</a>
-                <a href="/pricing.html" class="hover:text-[var(--primary)] transition">For Businesses</a>
                 <a href="/about.html" class="hover:text-[var(--primary)] transition">About</a>
                 <a href="/demo.html" class="hover:text-[var(--primary)] transition">Demo</a>
+                <a href="/pricing.html" class="hover:text-[var(--primary)] transition">Pricing</a>
+                <a href="/contact.html" class="hover:text-[var(--primary)] transition">Contact</a>
             </div>
-
-            <div class="flex items-center gap-4">
-                {% if user.is_authenticated %}
-                <span class="text-sm text-gray-300 hidden md:inline">Welcome, {{ user.username }}</span>
-                <a href="/dashboard/" class="text-sm hover:text-[var(--primary)]">Dashboard</a>
-                <a href="/dashboard/logout/" 
-                   class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-xl text-sm font-medium transition">
-                    Logout
-                </a>
-                {% else %}
-                <a href="https://calendly.com/william-bradshaw-enershift" target="_blank" 
-                   class="cta-btn text-sm">Start Free Pilot</a>
-                {% endif %}
-            </div>
+            <a href="https://calendly.com/william-bradshaw-enershift/60min" 
+               target="_blank"
+               class="bg-[var(--primary)] hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold transition">
+                Book Free Pilot Call
+            </a>
         </div>
     </nav>
 
     {% block content %}{% endblock %}
 
-    <!-- Consistent Footer -->
-    <footer class="bg-[var(--dark)] text-gray-400 py-12 mt-20">
+    <!-- Footer -->
+    <footer class="bg-[var(--dark)] text-white py-12">
         <div class="max-w-7xl mx-auto px-6 text-center">
-            <p class="mb-6">&copy; 2026 EnerShift</p>
-            <div class="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm">
-                <a href="/about.html" class="hover:text-white">About</a>
-                <a href="/pricing.html" class="hover:text-white">For Businesses</a>
-                <a href="/demo.html" class="hover:text-white">Demo</a>
-                <a href="/contact.html" class="hover:text-white">Contact</a>
-                <a href="/privacy.html" class="hover:text-white">Privacy</a>
+            <div class="flex justify-center mb-6">
+                <img src="{% static 'assets/enershift-logo.png' %}" alt="EnerShift" class="h-12 opacity-75">
             </div>
-            <p class="text-xs mt-10 text-gray-500">Helping businesses shift load and earn from flexibility markets</p>
+            <p class="text-sm opacity-75">© 2026 EnerShift. Helping businesses shift load and earn from flexibility markets.</p>
         </div>
     </footer>
 
