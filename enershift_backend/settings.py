@@ -11,7 +11,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'enershift.energy', 'www.enershift.energy']
+ALLOWED_HOSTS = ['.railway.app', 'enershift.energy', 'www.enershift.energy', '127.0.0.1', 'localhost']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -22,7 +22,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_htmx',
     'dashboard',
-    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
@@ -61,11 +60,13 @@ DATABASES = {
     'default': dj_database_url.config(default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'), conn_max_age=600)
 }
 
+# Static files - critical for Railway
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Security - softened for initial deployment to avoid redirect loops
+# Security (softened to avoid redirect loops)
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
@@ -75,3 +76,5 @@ X_FRAME_OPTIONS = 'DENY'
 
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
+
+# Remove django_htmx from MIDDLEWARE if you don't need it yet
