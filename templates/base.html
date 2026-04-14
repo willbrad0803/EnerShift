@@ -6,14 +6,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EnerShift - Energy Flexibility OS for North West UK Businesses</title>
-    <meta name="description" content="Forecast windy hours, shift load manually now, and save £3k–£12k/year. Automation coming soon for £14k–£45k+ annual value per site.">
-    
+    <meta name="description" content="Forecast windy hours and shift load manually now — save £3,000–£12,000 per year. Automation coming soon for £14,000–£45,000+ annual value.">
+
+    <!-- SEO + Social -->
     <meta property="og:title" content="EnerShift - Energy Flexibility OS">
     <meta property="og:description" content="Shift energy use to cheap wind power and earn from flexibility markets.">
     <meta property="og:image" content="https://www.enershift.energy/static/assets/enershift-logo.png">
 
     <link rel="icon" href="{% static 'assets/enershift-logo.png' %}">
 
+    <!-- Tailwind + Scripts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@2"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -39,22 +41,51 @@
 <body class="bg-[var(--light)] text-[var(--dark)]">
     <!-- Navbar -->
     <nav class="bg-[var(--dark)] text-white sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-            <div class="text-2xl font-bold tracking-tight">EnerShift</div>
-            
-            <div class="hidden md:flex gap-8 text-sm font-medium">
-                <a href="/" class="hover:text-[var(--primary)] transition">Home</a>
-                <a href="/about.html" class="hover:text-[var(--primary)] transition">About</a>
-                <a href="/demo.html" class="hover:text-[var(--primary)] transition">Demo</a>
-                <a href="/pricing.html" class="hover:text-[var(--primary)] transition">Pricing</a>
-                <a href="/contact.html" class="hover:text-[var(--primary)] transition">Contact</a>
+        <div class="max-w-7xl mx-auto px-6 py-5">
+            <div class="flex justify-between items-center">
+                <!-- Logo / Brand -->
+                <div class="text-2xl font-bold tracking-tight">EnerShift</div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex gap-8 text-sm font-medium">
+                    <a href="/" class="hover:text-[var(--primary)] transition">Home</a>
+                    <a href="/about.html" class="hover:text-[var(--primary)] transition">About</a>
+                    <a href="/demo.html" class="hover:text-[var(--primary)] transition">Demo</a>
+                    <a href="/pricing.html" class="hover:text-[var(--primary)] transition">Pricing</a>
+                    <a href="/contact.html" class="hover:text-[var(--primary)] transition">Contact</a>
+                </div>
+
+                <!-- CTA Button -->
+                <a href="https://calendly.com/william-bradshaw-enershift/60min" 
+                   target="_blank"
+                   class="hidden md:block bg-[var(--primary)] hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold transition">
+                    Book Free Pilot Call
+                </a>
+
+                <!-- Mobile Hamburger -->
+                <button id="mobile-menu-button"
+                        class="md:hidden text-white focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
             </div>
-            
-            <a href="https://calendly.com/william-bradshaw-enershift/60min" 
-               target="_blank"
-               class="bg-[var(--primary)] hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold transition">
-                Book Free Pilot Call
-            </a>
+
+            <!-- Mobile Menu Dropdown -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 py-4 border-t border-white/20">
+                <div class="flex flex-col gap-4 text-sm font-medium">
+                    <a href="/" class="hover:text-[var(--primary)] transition">Home</a>
+                    <a href="/about.html" class="hover:text-[var(--primary)] transition">About</a>
+                    <a href="/demo.html" class="hover:text-[var(--primary)] transition">Demo</a>
+                    <a href="/pricing.html" class="hover:text-[var(--primary)] transition">Pricing</a>
+                    <a href="/contact.html" class="hover:text-[var(--primary)] transition">Contact</a>
+                    <a href="https://calendly.com/william-bradshaw-enershift/60min" 
+                       target="_blank"
+                       class="mt-4 bg-[var(--primary)] hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold transition text-center">
+                        Book Free Pilot Call
+                    </a>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -85,5 +116,15 @@
     </footer>
 
     {% block extra_scripts %}{% endblock %}
+
+    <!-- Mobile Menu Script -->
+    <script>
+        const mobileButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
 </body>
 </html>
