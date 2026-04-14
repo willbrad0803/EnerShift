@@ -43,7 +43,7 @@
     <nav class="bg-[var(--dark)] text-white sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-5">
             <div class="flex justify-between items-center">
-                <!-- Logo / Brand -->
+                <!-- Brand -->
                 <div class="text-2xl font-bold tracking-tight">EnerShift</div>
 
                 <!-- Desktop Menu -->
@@ -54,7 +54,7 @@
                     <a href="/pricing.html" class="hover:text-[var(--primary)] transition">Pricing</a>
                     <a href="/contact.html" class="hover:text-[var(--primary)] transition">Contact</a>
                     
-                    <!-- Login Button (restored) -->
+                    <!-- Login Button -->
                     <a href="/dashboard/" 
                        class="text-sm font-medium hover:text-[var(--primary)] transition">
                         Login
@@ -71,21 +71,23 @@
                 <!-- Mobile Hamburger -->
                 <button id="mobile-menu-button"
                         class="md:hidden text-white focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
             </div>
 
-            <!-- Mobile Menu Dropdown -->
-            <div id="mobile-menu" class="hidden md:hidden mt-4 py-4 border-t border-white/20">
-                <div class="flex flex-col gap-4 text-sm font-medium">
-                    <a href="/" class="hover:text-[var(--primary)] transition">Home</a>
-                    <a href="/about.html" class="hover:text-[var(--primary)] transition">About</a>
-                    <a href="/demo.html" class="hover:text-[var(--primary)] transition">Demo</a>
-                    <a href="/pricing.html" class="hover:text-[var(--primary)] transition">Pricing</a>
-                    <a href="/contact.html" class="hover:text-[var(--primary)] transition">Contact</a>
-                    <a href="/dashboard/" class="hover:text-[var(--primary)] transition">Login</a>
+            <!-- Mobile Menu with Smooth Animation -->
+            <div id="mobile-menu" 
+                 class="hidden md:hidden mt-4 overflow-hidden transition-all duration-300 ease-out max-h-0">
+                <div class="flex flex-col gap-4 text-sm font-medium pt-4 border-t border-white/20">
+                    <a href="/" class="hover:text-[var(--primary)] transition py-2">Home</a>
+                    <a href="/about.html" class="hover:text-[var(--primary)] transition py-2">About</a>
+                    <a href="/demo.html" class="hover:text-[var(--primary)] transition py-2">Demo</a>
+                    <a href="/pricing.html" class="hover:text-[var(--primary)] transition py-2">Pricing</a>
+                    <a href="/contact.html" class="hover:text-[var(--primary)] transition py-2">Contact</a>
+                    <a href="/dashboard/" class="hover:text-[var(--primary)] transition py-2">Login</a>
+                    
                     <a href="https://calendly.com/william-bradshaw-enershift/60min" 
                        target="_blank"
                        class="mt-4 bg-[var(--primary)] hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold transition text-center">
@@ -124,13 +126,24 @@
 
     {% block extra_scripts %}{% endblock %}
 
-    <!-- Mobile Menu Script -->
+    <!-- Smooth Mobile Menu Script -->
     <script>
         const mobileButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
 
         mobileButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                // Trigger animation
+                setTimeout(() => {
+                    mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px';
+                }, 10);
+            } else {
+                mobileMenu.style.maxHeight = '0';
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                }, 300); // match transition duration
+            }
         });
     </script>
 </body>
