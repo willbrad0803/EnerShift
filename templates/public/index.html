@@ -9,8 +9,8 @@
                 Energy Flexibility OS
             </h1>
             <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-10">
-                Automatically shift your energy use to times when wind power is abundant and cheap.<br>
-                Forecast windy hours • Automate load shifting • Earn from BiTraDER, DFS and flexibility markets.
+                Forecast windy hours and shift load manually now — save £3,000–£12,000 per year.<br>
+                Automation coming in the next few months for £14,000–£45,000+ annual value per site.
             </p>
             <a href="https://calendly.com/william-bradshaw-enershift/60min" 
                target="_blank"
@@ -21,54 +21,47 @@
     </section>
 
     <!-- Map Section -->
-   <section class="py-16 bg-white">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center mb-10">
-            <h2 class="text-4xl font-bold tracking-tight mb-4">Live Wind Forecast Map</h2>
-            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                See real-time wind speeds across the North West. Strong wind hours = opportunity to shift load and earn.
-            </p>
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold tracking-tight mb-4">Live Wind Forecast Map</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    See real-time wind speeds across the North West. Strong wind hours = opportunity to shift load and save.
+                </p>
+            </div>
+            
+            <div class="bg-gray-100 rounded-3xl overflow-hidden shadow-2xl" style="height: 620px;">
+                <div id="map" style="height: 100%; width: 100%;"></div>
+            </div>
         </div>
-        
-        <div class="bg-gray-100 rounded-3xl overflow-hidden shadow-2xl" style="height: 620px;">
-            <div id="map" style="height: 100%; width: 100%;"></div>
-        </div>
-        
-        <p class="text-center text-sm text-gray-500 mt-6">
-            Map shows wind speed forecasts. Darker areas = stronger wind = better shifting opportunities.
-        </p>
-    </div>
-</section>
+    </section>
 
-    <!-- Simple CTA -->
-    <section class="py-16 bg-[var(--dark)] text-white text-center">
-        <div class="max-w-2xl mx-auto px-6">
-            <h2 class="text-4xl font-bold mb-6">Ready to start earning from flexibility?</h2>
-            <a href="https://calendly.com/william-bradshaw-enershift/60min" 
-               target="_blank"
-               class="inline-block bg-[var(--primary)] hover:bg-emerald-600 text-white px-10 py-5 rounded-3xl text-xl font-semibold transition">
-                Book Your Free Pilot Call
-            </a>
+    <!-- Value Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-5xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">Current vs Future Value</h2>
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="bg-white p-8 rounded-3xl">
+                    <h3 class="text-xl font-semibold mb-4 text-[var(--primary)]">Now (Manual Dashboard)</h3>
+                    <p class="text-3xl font-bold mb-6">£3,000 – £12,000 / year</p>
+                    <p class="text-gray-600">See forecasts and shift load yourself. Many users are already saving this much.</p>
+                </div>
+                <div class="bg-[var(--dark)] text-white p-8 rounded-3xl">
+                    <h3 class="text-xl font-semibold mb-4">Soon (With Automation)</h3>
+                    <p class="text-3xl font-bold mb-6">£14,000 – £45,000+ / year</p>
+                    <p class="opacity-90">The system will automatically trigger shifts — much higher and more consistent value.</p>
+                </div>
+            </div>
         </div>
     </section>
 </div>
-
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-    // Fixed map with proper referrer policy and reliable tiles
-    const map = L.map('map').setView([53.48, -2.24], 8);  // Centered on Manchester / North West
-
+    const map = L.map('map').setView([53.48, -2.24], 8);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors',
-        maxZoom: 19,
-        // This helps with the referrer policy
-        referrerPolicy: 'origin-when-cross-origin'
+        attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
-
-    // Example marker for Manchester area
-    L.marker([53.48, -2.24]).addTo(map)
-        .bindPopup("<b>North West Example</b><br>High wind potential for load shifting");
 </script>
 {% endblock %}
