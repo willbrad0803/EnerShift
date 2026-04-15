@@ -75,4 +75,7 @@ LOGIN_URL = '/dashboard/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
+# Disable admin login redirect to custom login if needed
+ADMIN_LOGIN_REDIRECT = False
+
 # Use built-in login view (no allauth)
