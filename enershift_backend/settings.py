@@ -79,3 +79,16 @@ LOGOUT_REDIRECT_URL = '/'
 ADMIN_LOGIN_REDIRECT = False
 
 # Use built-in login view (no allauth)
+
+# Email settings (use your own SMTP or a service like SendGrid/Gmail for production)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For testing - prints to console
+# For real emails later:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'your-email@gmail.com'
+# EMAIL_HOST_PASSWORD = 'your-app-password'
+
+# After registration, send confirmation email (optional but recommended)
+ACCOUNT_EMAIL_VERIFICATION = 'optional'   # Change to 'mandatory' when ready
