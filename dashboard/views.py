@@ -12,9 +12,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from .models import Site
 import requests
 
-# ======================
-# Custom Registration Form with Email
-# ======================
+# Custom form
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
@@ -22,9 +20,7 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
-# ======================
-# Registration View (with email verification)
-# ======================
+# Register view with email verification
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -33,7 +29,6 @@ def register(request):
             user.is_active = False
             user.save()
 
-            # Send verification email
             current_site = get_current_site(request)
             subject = 'Activate your EnerShift account'
             message = render_to_string('registration/account_activation_email.html', {
@@ -53,9 +48,7 @@ def register(request):
         'register_form': form,
     })
 
-# ======================
-# Email Activation View
-# ======================
+# Activation view
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -71,9 +64,7 @@ def activate(request, uidb64, token):
     else:
         return render(request, 'registration/activation_invalid.html')
 
-# ======================
-# Dashboard Views
-# ======================
+# Protected dashboard views
 @login_required
 def dashboard_home(request):
     sites = Site.objects.filter(user=request.user)
@@ -94,41 +85,28 @@ def add_site(request):
         name = request.POST.get('name')
         postcode = request.POST.get('postcode')
         industry_type = request.POST.get('industry_type', 'Other')
-        
         if name and postcode:
-            Site.objects.create(
-                user=request.user,
-                name=name,
-                postcode=postcode,
-                industry_type=industry_type
-            )
+            Site.objects.create(user=request.user, name=name, postcode=postcode, industry_type=industry_type)
             return redirect('dashboard_home')
-    
     return render(request, 'dashboard/add_site.html')
 
 @login_required
 def site_detail(request, site_id):
     site = get_object_or_404(Site, id=site_id, user=request.user)
-    
+    forecast_data = None
     try:
         pc_response = requests.get(f"https://api.postcodes.io/postcodes/{site.postcode.replace(' ', '')}")
         if pc_response.status_code == 200:
             data = pc_response.json()
             lat = data['result']['latitude']
             lon = data['result']['longitude']
-            
             weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=wind_speed_10m"
             weather_response = requests.get(weather_url)
-            forecast_data = weather_response.json() if weather_response.status_code == 200 else None
-        else:
-            forecast_data = None
+            if weather_response.status_code == 200:
+                forecast_data = weather_response.json()
     except:
-        forecast_data = None
-
-    return render(request, 'dashboard/site_detail.html', {
-        'site': site,
-        'forecast_data': forecast_data
-    })
+        pass
+    return render(request, 'dashboard/site_detail.html', {'site': site, 'forecast_data': forecast_data})
 
 @login_required
 def delete_site(request, site_id):
