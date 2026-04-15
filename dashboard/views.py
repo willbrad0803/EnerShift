@@ -1,10 +1,31 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 from .models import Site
 import requests
-from datetime import datetime
 
+# ======================
+# User Registration
+# ======================
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)                    # Automatically log the user in after registration
+            return redirect('dashboard_home')
+    else:
+        form = UserCreationForm()
+    
+    return render(request, 'registration/login.html', {
+        'form': form,
+        'register_form': form,   # Used by the combined login/register template
+    })
+
+# ======================
+# Dashboard Views
+# ======================
 @login_required
 def dashboard_home(request):
     sites = Site.objects.filter(user=request.user)
@@ -13,16 +34,9 @@ def dashboard_home(request):
 @login_required
 def all_sites_overview(request):
     sites = Site.objects.filter(user=request.user)
-    total_sites = sites.count()
-    
-    # Simple aggregate estimate
-    total_estimated_earnings = "£0 - £1,200"
-    if total_sites > 0:
-        total_estimated_earnings = f"£{total_sites * 180} - £{total_sites * 550}"
-    
+    total_estimated_earnings = len(sites) * 350  # Rough average monthly estimate
     return render(request, 'dashboard/all_sites.html', {
         'sites': sites,
-        'total_sites': total_sites,
         'total_estimated_earnings': total_estimated_earnings
     })
 
@@ -30,16 +44,17 @@ def all_sites_overview(request):
 def add_site(request):
     if request.method == 'POST':
         name = request.POST.get('name')
-        postcode = request.POST.get('postcode', '').upper().replace(" ", "")
+        postcode = request.POST.get('postcode')
         industry_type = request.POST.get('industry_type')
         
-        site = Site.objects.create(
-            user=request.user,
-            name=name,
-            postcode=postcode,
-            industry_type=industry_type
-        )
-        return redirect('dashboard_home')
+        if name and postcode:
+            Site.objects.create(
+                user=request.user,
+                name=name,
+                postcode=postcode,
+                industry_type=industry_type or 'Other'
+            )
+            return redirect('dashboard_home')
     
     return render(request, 'dashboard/add_site.html')
 
@@ -47,79 +62,36 @@ def add_site(request):
 def site_detail(request, site_id):
     site = get_object_or_404(Site, id=site_id, user=request.user)
     
-    forecast_data = None
-    recommendation = "Could not fetch forecast right now."
-    estimated_earnings = "£0 - £150"
-    last_updated = datetime.now().strftime("%d %b %H:%M")
-    
+    # Example API calls for forecast (you can expand this)
     try:
-        clean_postcode = site.postcode.replace(" ", "")
-        
-        pc_url = f"https://api.postcodes.io/postcodes/{clean_postcode}"
-        pc_response = requests.get(pc_url, timeout=5)
-        
+        pc_response = requests.get(f"https://api.postcodes.io/postcodes/{site.postcode.replace(' ', '')}")
         if pc_response.status_code == 200:
-            pc_data = pc_response.json()
-            lat = pc_data['result']['latitude']
-            lon = pc_data['result']['longitude']
+            data = pc_response.json()
+            lat = data['result']['latitude']
+            lon = data['result']['longitude']
             
-            weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=wind_speed_10m&timezone=Europe/London"
-            weather_response = requests.get(weather_url, timeout=10)
-            
-            if weather_response.status_code == 200:
-                data = weather_response.json()
-                hourly = data.get('hourly', {})
-                times = hourly.get('time', [])
-                speeds = hourly.get('wind_speed_10m', [])
-                
-                high_wind = []
-                total_strong_wind_hours = 0
-                
-                for i in range(min(len(times), len(speeds))):
-                    if speeds[i] > 8.0:
-                        high_wind.append({
-                            'time': times[i][11:16],
-                            'wind_speed': round(speeds[i], 1)
-                        })
-                        total_strong_wind_hours += 1
-                
-                if high_wind:
-                    forecast_data = high_wind[:8]
-                    low = total_strong_wind_hours * 30
-                    high = total_strong_wind_hours * 60
-                    estimated_earnings = f"£{low}-£{high}"
-                    recommendation = f"Shift load to high-wind periods tomorrow. Strong wind expected for {total_strong_wind_hours} hours."
-                else:
-                    recommendation = "No strong wind surplus expected in the next 48 hours."
-    except Exception as e:
-        recommendation = f"Error fetching forecast: {str(e)[:80]}"
-    
+            weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=wind_speed_10m"
+            weather_response = requests.get(weather_url)
+            forecast_data = weather_response.json() if weather_response.status_code == 200 else None
+        else:
+            forecast_data = None
+    except:
+        forecast_data = None
+
     return render(request, 'dashboard/site_detail.html', {
         'site': site,
-        'forecast_data': forecast_data,
-        'recommendation': recommendation,
-        'estimated_earnings': estimated_earnings,
-        'last_updated': last_updated
+        'forecast_data': forecast_data
     })
 
 @login_required
-@require_POST
 def delete_site(request, site_id):
     site = get_object_or_404(Site, id=site_id, user=request.user)
-    site.delete()
-    return redirect('dashboard_home')
-
-from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-
-def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('dashboard_home')
-    else:
-        form = UserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+        site.delete()
+        return redirect('dashboard_home')
+    return redirect('site_detail', site_id=site_id)
+
+# Optional: Simple help view
+@login_required
+def help_view(request):
+    return render(request, 'dashboard/help.html')
