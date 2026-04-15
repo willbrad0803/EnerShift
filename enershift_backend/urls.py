@@ -8,14 +8,12 @@ handler500 = 'django.views.defaults.server_error'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
-    # Public marketing pages
+    path('dashboard/', include('dashboard.urls')),
     path('', TemplateView.as_view(template_name='public/index.html'), name='home'),
-    path('pricing.html', TemplateView.as_view(template_name='public/pricing.html'), name='pricing'),
-    path('about.html', TemplateView.as_view(template_name='public/about.html'), name='about'),
-    path('demo.html', TemplateView.as_view(template_name='public/demo.html'), name='demo'),
-    path('contact.html', TemplateView.as_view(template_name='public/contact.html'), name='contact'),
-    path('privacy.html', TemplateView.as_view(template_name='public/privacy.html'), name='privacy'),
+    path('about.html', TemplateView.as_view(template_name='public/about.html')),
+    path('demo.html', TemplateView.as_view(template_name='public/demo.html')),
+    path('pricing.html', TemplateView.as_view(template_name='public/pricing.html')),
+    path('contact.html', TemplateView.as_view(template_name='public/contact.html')),
 
     # Dashboard
     path('dashboard/', include('dashboard.urls')),
