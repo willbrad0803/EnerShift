@@ -9,6 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+SITE_ID = 1
+
 DEBUG = False
 
 ALLOWED_HOSTS = ['.railway.app', 'enershift.energy', 'www.enershift.energy', '127.0.0.1', 'localhost']
@@ -21,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
+    'django.contrib.sites',
     'django_htmx',
     'dashboard',
 ]
