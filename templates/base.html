@@ -46,27 +46,27 @@
                 <!-- Brand -->
                 <div class="text-2xl font-bold tracking-tight">EnerShift</div>
 
-                <!-- Desktop Menu -->
+                <!-- Desktop Menu + Buttons -->
                 <div class="hidden md:flex items-center gap-8 text-sm font-medium">
                     <a href="/" class="hover:text-[var(--primary)] transition">Home</a>
                     <a href="/about.html" class="hover:text-[var(--primary)] transition">About</a>
                     <a href="/demo.html" class="hover:text-[var(--primary)] transition">Demo</a>
                     <a href="/pricing.html" class="hover:text-[var(--primary)] transition">Pricing</a>
                     <a href="/contact.html" class="hover:text-[var(--primary)] transition">Contact</a>
-                    
-                    <!-- Login Button -->
-                    <a href="/dashboard/" 
-                       class="text-sm font-medium hover:text-[var(--primary)] transition">
-                        Login
-                    </a>
                 </div>
 
-                <!-- Desktop CTA -->
-                <a href="https://calendly.com/william-bradshaw-enershift/60min" 
-                   target="_blank"
-                   class="hidden md:block bg-[var(--primary)] hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold transition">
-                    Book Free Pilot Call
-                </a>
+                <!-- Desktop Right Side: Login + CTA -->
+                <div class="hidden md:flex items-center gap-4">
+                    <a href="/dashboard/" 
+                       class="text-sm font-medium hover:text-[var(--primary)] transition px-4 py-2">
+                        Login
+                    </a>
+                    <a href="https://calendly.com/william-bradshaw-enershift/60min" 
+                       target="_blank"
+                       class="bg-[var(--primary)] hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold transition">
+                        Book Free Pilot Call
+                    </a>
+                </div>
 
                 <!-- Mobile Hamburger -->
                 <button id="mobile-menu-button"
@@ -134,7 +134,6 @@
         mobileButton.addEventListener('click', () => {
             if (mobileMenu.classList.contains('hidden')) {
                 mobileMenu.classList.remove('hidden');
-                // Trigger animation
                 setTimeout(() => {
                     mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px';
                 }, 10);
@@ -142,7 +141,7 @@
                 mobileMenu.style.maxHeight = '0';
                 setTimeout(() => {
                     mobileMenu.classList.add('hidden');
-                }, 300); // match transition duration
+                }, 300);
             }
         });
     </script>
