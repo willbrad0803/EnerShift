@@ -1,28 +1,30 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from .models import Site
-import requests
 
-# ======================
-# User Registration
-# ======================
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)                    # Automatically log the user in after registration
+            login(request, user)
             return redirect('dashboard_home')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     
     return render(request, 'registration/login.html', {
         'form': form,
-        'register_form': form,   # Used by the combined login/register template
+        'register_form': form,
     })
-
+    
 # ======================
 # Dashboard Views
 # ======================
