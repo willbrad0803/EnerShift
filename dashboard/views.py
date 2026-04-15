@@ -12,7 +12,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from .models import Site
 import requests
 
-# Custom form
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
@@ -20,7 +19,6 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
-# Register view with email verification
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -48,7 +46,6 @@ def register(request):
         'register_form': form,
     })
 
-# Activation view
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -64,7 +61,7 @@ def activate(request, uidb64, token):
     else:
         return render(request, 'registration/activation_invalid.html')
 
-# Protected dashboard views
+# Protected dashboard views (unchanged)
 @login_required
 def dashboard_home(request):
     sites = Site.objects.filter(user=request.user)
