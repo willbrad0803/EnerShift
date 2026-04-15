@@ -1,7 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -52,6 +52,7 @@ def register(request):
         'form': form,
         'register_form': form,
     })
+
 # ======================
 # Email Activation View
 # ======================
@@ -71,7 +72,7 @@ def activate(request, uidb64, token):
         return render(request, 'registration/activation_invalid.html')
 
 # ======================
-# Dashboard Views (protected)
+# Dashboard Views
 # ======================
 @login_required
 def dashboard_home(request):
