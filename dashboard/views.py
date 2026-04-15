@@ -108,3 +108,18 @@ def delete_site(request, site_id):
     site = get_object_or_404(Site, id=site_id, user=request.user)
     site.delete()
     return redirect('dashboard_home')
+
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('dashboard_home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
