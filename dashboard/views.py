@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -30,7 +30,7 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = False  # Require email verification
+            user.is_active = False
             user.save()
 
             # Send verification email
@@ -52,7 +52,6 @@ def register(request):
         'form': form,
         'register_form': form,
     })
-
 # ======================
 # Email Activation View
 # ======================
