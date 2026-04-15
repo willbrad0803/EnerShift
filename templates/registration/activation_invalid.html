@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-md mx-auto px-6 py-20 text-center">
+    <div class="bg-white rounded-3xl shadow-xl p-10">
+        <h2 class="text-3xl font-bold text-red-600 mb-6">Activation Failed</h2>
+        
+        <p class="text-gray-600 mb-8">
+            The activation link is invalid or has expired.<br>
+            Please try registering again or contact us if the problem persists.
+        </p>
+        
+        <a href="/dashboard/register/" 
+           class="inline-block bg-[var(--primary)] hover:bg-emerald-600 text-white px-10 py-4 rounded-2xl font-semibold transition">
+            Register Again
+        </a>
+        
+        <p class="text-center text-sm text-gray-500 mt-10">
+            Need help? <a href="/contact.html" class="text-[var(--primary)] hover:underline">Contact us</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
