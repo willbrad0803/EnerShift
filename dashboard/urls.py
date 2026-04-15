@@ -13,6 +13,7 @@ urlpatterns = [
     path('add-site/', views.add_site, name='add_site'),
     path('site/<int:site_id>/', views.site_detail, name='site_detail'),
     path('site/<int:site_id>/delete/', views.delete_site, name='delete_site'),
+    path('register/', views.register, name='register'),,
 
     path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
 ]
