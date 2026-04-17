@@ -2,6 +2,7 @@ from django import forms
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm   # ← This was missing!
 from django.contrib.auth import login
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -33,7 +34,6 @@ def register(request):
             user.is_active = False
             user.save()
 
-            # Send verification email
             current_site = get_current_site(request)
             subject = 'Activate your EnerShift account'
             message = render_to_string('registration/account_activation_email.html', {
