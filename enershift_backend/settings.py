@@ -11,7 +11,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 SITE_ID = 1
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['.railway.app', 'enershift.energy', 'www.enershift.energy', '127.0.0.1', 'localhost']
 
