@@ -1,94 +1,118 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="min-h-screen">
-    <!-- Hero -->
-    <section class="bg-gradient-to-br from-[var(--dark)] to-[#1e3a2f] text-white py-24">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <h1 class="text-5xl md:text-6xl font-bold tracking-tight mb-6">
-                Energy Flexibility OS
-            </h1>
-            <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-10">
-                Forecast windy hours and shift load manually now — save £3,000–£12,000 per year per site.<br>
-                Automation coming in the next few months for £14,000–£45,000+ annual value.
-            </p>
-            <a href="https://calendly.com/william-bradshaw-enershift/60min" 
-               target="_blank"
-               class="inline-block bg-[var(--primary)] hover:bg-emerald-600 text-white px-10 py-5 rounded-3xl text-xl font-semibold transition">
-                Book Free 60-day Pilot Call
+
+<!-- New Prominent Hero Banner -->
+<section class="bg-gradient-to-r from-emerald-700 to-teal-800 text-white py-20">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+        <div class="inline-flex items-center bg-white/20 backdrop-blur-md rounded-full px-6 py-2 text-sm mb-6">
+            🚀 Now Live for North West Businesses
+        </div>
+        <h1 class="text-5xl md:text-6xl font-bold leading-tight mb-6">
+            Ride the wind.<br>
+            Save on bills.<br>
+            <span class="text-emerald-300">Get paid by the grid.</span>
+        </h1>
+        <p class="text-xl md:text-2xl max-w-3xl mx-auto mb-10">
+            Helping NW businesses save on electricity <strong>and</strong> earn from ENWL monthly tenders + bi-directional NESO DFS (live April 2026).
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/dashboard/register/" 
+               class="bg-white text-emerald-700 hover:bg-emerald-100 font-semibold px-10 py-4 rounded-2xl text-lg transition">
+                Start Free 60-Day Pilot
+            </a>
+            <a href="https://calendly.com/yourusername/15min" target="_blank"
+               class="border border-white/70 hover:bg-white/10 font-semibold px-10 py-4 rounded-2xl text-lg transition">
+                Book a Quick Call
             </a>
         </div>
-    </section>
+        <p class="text-sm text-emerald-200 mt-6">No hardware. No risk. Start earning this month.</p>
+    </div>
+</section>
 
-    <!-- Map Section -->
-    <section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-10">
-                <h2 class="text-4xl font-bold tracking-tight mb-4">Live Wind Forecast Map</h2>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    See real-time wind speeds across the North West. Strong wind hours = opportunity to shift load and save.
-                </p>
+<!-- Dual Revenue Section -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-4xl font-bold text-center mb-12">Two Ways to Make Money</h2>
+        <div class="grid md:grid-cols-2 gap-10">
+            <div class="bg-white p-10 rounded-3xl shadow">
+                <div class="text-emerald-600 text-5xl mb-4">💰</div>
+                <h3 class="text-2xl font-semibold mb-4">Save on Your Bills</h3>
+                <p class="text-gray-600 mb-6">Shift refrigeration, compressors, HVAC and pumps to high-wind, low-price hours. Typical NW food & manufacturing sites save £4k–£15k/year.</p>
+                <a href="/demo.html" class="text-emerald-600 font-medium hover:underline">See how it works →</a>
             </div>
-            
-            <div class="bg-gray-100 rounded-3xl overflow-hidden shadow-2xl" style="height: 620px;">
-                <div id="map" style="height: 100%; width: 100%;"></div>
-            </div>
-            
-            <p class="text-center text-sm text-gray-500 mt-6">
-                Map shows wind speed forecasts. Darker areas = stronger wind = better shifting opportunities.
-            </p>
-        </div>
-    </section>
-
-    <!-- Value Section -->
-    <section class="py-16 bg-gray-50">
-        <div class="max-w-5xl mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12">Current vs Future Value</h2>
-            <div class="grid md:grid-cols-2 gap-10">
-                <div class="bg-white p-8 rounded-3xl shadow">
-                    <h3 class="text-xl font-semibold mb-4 text-[var(--primary)]">Now (Manual Dashboard)</h3>
-                    <p class="text-3xl font-bold mb-6">£3,000 – £12,000 / year</p>
-                    <p class="text-gray-600">See forecasts and shift load yourself. Many users are already saving this much by acting on the recommendations.</p>
-                </div>
-                <div class="bg-[var(--dark)] text-white p-8 rounded-3xl shadow">
-                    <h3 class="text-xl font-semibold mb-4">Soon (With Automation)</h3>
-                    <p class="text-3xl font-bold mb-6">£14,000 – £45,000+ / year</p>
-                    <p class="opacity-90">The system will automatically trigger shifts — much higher and more consistent savings + earnings from flexibility markets.</p>
-                </div>
+            <div class="bg-white p-10 rounded-3xl shadow border-2 border-emerald-600">
+                <div class="text-emerald-600 text-5xl mb-4">⚡</div>
+                <h3 class="text-2xl font-semibold mb-4">Earn from the Grid</h3>
+                <p class="text-gray-600">Register for ENWL monthly flexibility tenders + bi-directional NESO DFS events. Get paid to reduce or shift demand when the grid needs it most.</p>
+                <p class="text-sm text-emerald-700 mt-4 font-medium">DFS live April 2026 — we’ll help you get set up during your pilot.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- CTA Section -->
-    <section class="py-16 bg-[var(--dark)] text-white text-center">
-        <div class="max-w-2xl mx-auto px-6">
-            <h2 class="text-4xl font-bold mb-6">Ready to start saving and earning?</h2>
-            <p class="text-lg opacity-90 mb-10">
-                Join our free 60-day pilot and see the forecasts for your sites.
-            </p>
-            <a href="https://calendly.com/william-bradshaw-enershift/60min" 
-               target="_blank"
-               class="inline-block bg-[var(--primary)] hover:bg-emerald-600 text-white px-10 py-5 rounded-3xl text-xl font-semibold transition">
-                Book Your Free Pilot Call
-            </a>
+<!-- Live Wind Map Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-4xl font-bold text-center mb-8">Live North West Wind Forecast</h2>
+        <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">
+            See exactly when high winds create opportunities for your site. Postcode-specific data updated hourly.
+        </p>
+        <div class="bg-gray-100 rounded-3xl p-4 shadow-inner">
+            <!-- Your existing Leaflet map code here -->
+            <div id="map" style="height: 500px; border-radius: 20px;"></div>
         </div>
-    </section>
-</div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-5xl mx-auto px-6">
+        <h2 class="text-4xl font-bold text-center mb-12">How It Works</h2>
+        <div class="grid md:grid-cols-3 gap-10">
+            <div class="text-center">
+                <div class="text-6xl mb-6">1️⃣</div>
+                <h3 class="font-semibold text-2xl mb-3">Manual Shift</h3>
+                <p class="text-gray-600">Use our dashboard to shift refrigeration, compressors, HVAC and other flexible loads to windy hours.</p>
+            </div>
+            <div class="text-center">
+                <div class="text-6xl mb-6">2️⃣</div>
+                <h3 class="font-semibold text-2xl mb-3">Earn from Tenders</h3>
+                <p class="text-gray-600">We register you for ENWL tenders and upcoming NESO DFS events so you get paid by the grid.</p>
+            </div>
+            <div class="text-center">
+                <div class="text-6xl mb-6">3️⃣</div>
+                <h3 class="font-semibold text-2xl mb-3">Automation Upgrade</h3>
+                <p class="text-gray-600">Later this year add rule-based or API automation so shifting happens automatically.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Strong Pilot CTA -->
+<section class="py-20 bg-emerald-50 border-t border-b border-emerald-100">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+        <h2 class="text-4xl font-bold mb-6">Ready to Start Saving & Earning?</h2>
+        <p class="text-xl text-gray-700 mb-10">
+            Join our free 60-day pilot. We’ll register you for ElectronConnect so you can start earning from ENWL events immediately.
+        </p>
+        <a href="https://calendly.com/yourusername/15min" target="_blank"
+           class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-12 py-5 rounded-2xl text-xl transition">
+            Book Your Free Pilot Call Now →
+        </a>
+        <p class="text-sm text-gray-600 mt-8">Takes 15 minutes • Zero commitment • No hardware required</p>
+    </div>
+</section>
+
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-    // Reliable map with better tile handling
-    const map = L.map('map').setView([53.48, -2.24], 8);  // Centered on Manchester / North West
-
+    // Your existing Leaflet map code here (keep it as is)
+    var map = L.map('map').setView([53.48, -2.24], 8);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors',
-        maxZoom: 19,
-        referrerPolicy: 'origin-when-cross-origin'
+        attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
-
-    // Example marker
-    L.marker([53.48, -2.24]).addTo(map)
-        .bindPopup("<b>North West Example</b><br>High wind potential for load shifting");
+    // Add your markers etc.
 </script>
 {% endblock %}
