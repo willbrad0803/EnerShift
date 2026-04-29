@@ -128,3 +128,44 @@ def delete_site(request, site_id):
 @login_required
 def help_view(request):
     return render(request, 'dashboard/help.html')
+
+from django.core.files.storage import default_storage
+import csv
+from datetime import datetime
+from django.contrib import messages
+
+@login_required
+def upload_consumption(request, site_id):
+    site = get_object_or_404(Site, id=site_id, user=request.user)
+    
+    if request.method == 'POST' and request.FILES.get('csv_file'):
+        csv_file = request.FILES['csv_file']
+        
+        if not csv_file.name.endswith('.csv'):
+            messages.error(request, "Please upload a CSV file")
+            return redirect('site_detail', site_id=site_id)
+        
+        try:
+            file_content = csv_file.read().decode('utf-8').splitlines()
+            reader = csv.DictReader(file_content)
+            
+            count = 0
+            for row in reader:
+                try:
+                    timestamp = datetime.strptime(row['timestamp'], '%Y-%m-%d %H:%M:%S')
+                    kwh = float(row['kwh'])
+                    
+                    ConsumptionData.objects.update_or_create(
+                        site=site,
+                        timestamp=timestamp,
+                        defaults={'kwh': kwh, 'price_p_per_kwh': float(row.get('price_p_per_kwh', 0))}
+                    )
+                    count += 1
+                except:
+                    continue  # Skip bad rows
+                    
+            messages.success(request, f"Successfully imported {count} consumption records for {site.name}")
+        except Exception as e:
+            messages.error(request, f"Error processing file: {str(e)}")
+    
+    return redirect('site_detail', site_id=site_id)
