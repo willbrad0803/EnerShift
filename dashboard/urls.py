@@ -10,6 +10,7 @@ urlpatterns = [
 
     path('register/', views.register, name='register'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
+    path('site/<int:site_id>/upload/', views.upload_consumption, name='upload_consumption'),
 
     path('', views.dashboard_home, name='dashboard_home'),
     path('overview/', views.all_sites_overview, name='all_sites_overview'),
