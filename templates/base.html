@@ -100,6 +100,20 @@
 
     {% block content %}{% endblock %}
 
+    <!-- Messages -->
+{% if messages %}
+    <div class="max-w-6xl mx-auto px-6 pt-6">
+        {% for message in messages %}
+            <div class="p-4 rounded-2xl mb-4 text-sm font-medium
+                        {% if message.tags == 'success' %}bg-emerald-100 text-emerald-800 border border-emerald-200
+                        {% elif message.tags == 'error' %}bg-red-100 text-red-800 border border-red-200
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
     <!-- Footer -->
     <footer class="bg-[var(--dark)] text-white py-12">
         <div class="max-w-7xl mx-auto px-6">
