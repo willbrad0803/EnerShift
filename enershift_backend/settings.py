@@ -95,3 +95,14 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For testing 
 
 # After registration, send confirmation email (optional but recommended)
 ACCOUNT_EMAIL_VERIFICATION = 'optional'   # Change to 'mandatory' when ready
+
+# Security & CSRF Settings
+CSRF_TRUSTED_ORIGINS = [
+    'https://enershift.energy',
+    'https://www.enershift.energy',
+    'https://*.railway.app',           # For development on Railway
+]
+
+# Also ensure these are set correctly
+DEBUG = True  # Keep True for now
+ALLOWED_HOSTS = ['*']  # Or specifically: ['enershift.energy', 'www.enershift.energy']
