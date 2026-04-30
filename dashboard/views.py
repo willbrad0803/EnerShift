@@ -4,29 +4,78 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
 from .models import Site, ConsumptionData
 import requests
 import csv
 from datetime import datetime
 
 # ======================
-# Registration (Simple + Success Message)
+# Custom Registration Form with Email
+# ======================
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+
+# ======================
+# Registration - Requires Email Verification
 # ======================
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, "✅ Account created successfully! Welcome to EnerShift.")
-            return redirect('dashboard_home')
+            user = form.save(commit=False)
+            user.is_active = False  # Must verify email first
+            user.save()
+
+            # Send verification email
+            current_site = get_current_site(request)
+            subject = 'Activate your EnerShift account'
+            message = render_to_string('registration/account_activation_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user),
+            })
+            send_mail(subject, message, 'noreply@enershift.energy', [user.email])
+
+            return render(request, 'registration/account_activation_sent.html')
     else:
-        form = UserCreationForm()
-    
+        form = CustomUserCreationForm()
+
     return render(request, 'registration/login.html', {
         'form': form,
         'register_form': form,
     })
+
+
+# ======================
+# Email Activation View
+# ======================
+def activate(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        messages.success(request, "✅ Email verified successfully! Welcome to EnerShift.")
+        return redirect('dashboard_home')
+    else:
+        return render(request, 'registration/activation_invalid.html')
 
 
 # ======================
@@ -72,7 +121,6 @@ def site_detail(request, site_id):
     consumption = ConsumptionData.objects.filter(site=site).order_by('timestamp')
 
     # Wind forecast + recommendations
-    forecast_data = None
     recommendations = []
     try:
         pc_response = requests.get(f"https://api.postcodes.io/postcodes/{site.postcode.replace(' ', '')}")
@@ -85,13 +133,11 @@ def site_detail(request, site_id):
             weather_response = requests.get(weather_url)
             if weather_response.status_code == 200:
                 forecast_data = weather_response.json()
-                
-                # Simple recommendations
                 for i, wind in enumerate(forecast_data['hourly']['wind_speed_10m'][:24]):
                     if wind > 10:
                         recommendations.append({
                             'time': forecast_data['hourly']['time'][i],
-                            'action': 'Shift chillers, compressors or pumps',
+                            'action': 'Shift chillers/compressors/pumps',
                             'reason': f'High wind ({wind:.1f} m/s) → likely cheaper power'
                         })
     except:
@@ -100,8 +146,7 @@ def site_detail(request, site_id):
     return render(request, 'dashboard/site_detail.html', {
         'site': site,
         'consumption': consumption,
-        'forecast_data': forecast_data,
-        'recommendations': recommendations[:6]
+        'recommendations': recommendations
     })
 
 
@@ -134,9 +179,9 @@ def upload_consumption(request, site_id):
                     count += 1
                 except:
                     continue
-            messages.success(request, f"✅ Imported {count} consumption records for {site.name}")
+            messages.success(request, f"✅ Imported {count} records for {site.name}")
         except Exception as e:
-            messages.error(request, f"Error processing file: {str(e)}")
+            messages.error(request, f"Error: {str(e)}")
     
     return redirect('site_detail', site_id=site_id)
 
