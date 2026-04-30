@@ -8,13 +8,13 @@ class Site(models.Model):
     postcode = models.CharField(max_length=10)
     industry_type = models.CharField(max_length=100, default='Other')
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)   # ← This was missing
 
     def __str__(self):
         return f"{self.name} ({self.postcode})"
 
     class Meta:
         ordering = ['name']
-
 
 class ConsumptionData(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name='consumption')
