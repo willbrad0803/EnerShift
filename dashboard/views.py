@@ -4,19 +4,13 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.contrib import messages
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.shortcuts import get_current_site
 from .models import Site, ConsumptionData
 import requests
 import csv
 from datetime import datetime
 
 # ======================
-# Registration (Simple for now - email verification can be re-added later)
+# Registration (Simple + Success Message)
 # ======================
 def register(request):
     if request.method == 'POST':
@@ -24,10 +18,15 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, "✅ Account created successfully! Welcome to EnerShift.")
             return redirect('dashboard_home')
     else:
         form = UserCreationForm()
-    return render(request, 'registration/login.html', {'form': form, 'register_form': form})
+    
+    return render(request, 'registration/login.html', {
+        'form': form,
+        'register_form': form,
+    })
 
 
 # ======================
@@ -56,7 +55,13 @@ def add_site(request):
         postcode = request.POST.get('postcode')
         industry_type = request.POST.get('industry_type', 'Other')
         if name and postcode:
-            Site.objects.create(user=request.user, name=name, postcode=postcode, industry_type=industry_type)
+            Site.objects.create(
+                user=request.user,
+                name=name,
+                postcode=postcode,
+                industry_type=industry_type
+            )
+            messages.success(request, f"Site '{name}' added successfully!")
             return redirect('dashboard_home')
     return render(request, 'dashboard/add_site.html')
 
@@ -66,7 +71,7 @@ def site_detail(request, site_id):
     site = get_object_or_404(Site, id=site_id, user=request.user)
     consumption = ConsumptionData.objects.filter(site=site).order_by('timestamp')
 
-    # Wind forecast
+    # Wind forecast + recommendations
     forecast_data = None
     recommendations = []
     try:
@@ -81,15 +86,13 @@ def site_detail(request, site_id):
             if weather_response.status_code == 200:
                 forecast_data = weather_response.json()
                 
-                # Basic recommendations
-                times = forecast_data['hourly']['time'][:24]
-                winds = forecast_data['hourly']['wind_speed_10m'][:24]
-                for t, wind in zip(times, winds):
+                # Simple recommendations
+                for i, wind in enumerate(forecast_data['hourly']['wind_speed_10m'][:24]):
                     if wind > 10:
                         recommendations.append({
-                            'time': t,
-                            'action': 'Shift chillers / compressors / pumps',
-                            'reason': f'High wind ({wind:.1f} m/s) → likely cheap power'
+                            'time': forecast_data['hourly']['time'][i],
+                            'action': 'Shift chillers, compressors or pumps',
+                            'reason': f'High wind ({wind:.1f} m/s) → likely cheaper power'
                         })
     except:
         pass
@@ -131,9 +134,9 @@ def upload_consumption(request, site_id):
                     count += 1
                 except:
                     continue
-            messages.success(request, f"Imported {count} records for {site.name}")
+            messages.success(request, f"✅ Imported {count} consumption records for {site.name}")
         except Exception as e:
-            messages.error(request, f"Error: {str(e)}")
+            messages.error(request, f"Error processing file: {str(e)}")
     
     return redirect('site_detail', site_id=site_id)
 
@@ -143,5 +146,6 @@ def delete_site(request, site_id):
     site = get_object_or_404(Site, id=site_id, user=request.user)
     if request.method == 'POST':
         site.delete()
+        messages.success(request, "Site deleted successfully")
         return redirect('dashboard_home')
     return redirect('site_detail', site_id=site_id)
