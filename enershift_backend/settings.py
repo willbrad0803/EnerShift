@@ -103,5 +103,9 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app',
 ]
 
+git add templates/registration/login.html enershift_backend/settings.py
+git commit -m "Fix login/register form - explicit action + CSRF"
+git push origin django-saas-pivot --force
+
 ALLOWED_HOSTS = ['*']
 DEBUG = True
