@@ -1,90 +1,59 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="min-h-screen bg-[var(--light)] py-12">
-  <div class="max-w-5xl mx-auto px-8">
-    <a href="{% url 'dashboard_home' %}" class="inline-flex items-center text-gray-500 hover:text-[var(--primary)] mb-10">
-      ← Back to Dashboard
-    </a>
+<div class="max-w-5xl mx-auto px-6 py-10">
 
-<div class="bg-white p-8 rounded-3xl shadow mb-8">
-    <h3 class="font-semibold text-xl mb-4">Upload Smart Meter Data (CSV)</h3>
-    <form method="post" enctype="multipart/form-data" class="flex gap-4">
-        {% csrf_token %}
-        <input type="file" name="csv_file" accept=".csv" required 
-               class="block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-2xl file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
-        <button type="submit" 
-                class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-2xl font-medium">
-            Upload Data
-        </button>
-    </form>
-    <p class="text-xs text-gray-500 mt-3">
-        Expected columns: timestamp (YYYY-MM-DD HH:MM:SS), kwh, price_p_per_kwh (optional)
-    </p>
-</div>
-    
-    <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
-      <!-- Header -->
-      <div class="px-10 pt-10 pb-8 border-b flex justify-between items-start">
-        <div>
-          <h1 class="text-4xl font-bold">{{ site.name }}</h1>
-          <p class="text-xl text-gray-500 mt-2">{{ site.postcode }} • {{ site.get_industry_type_display }}</p>
-        </div>
-        <form method="post" action="{% url 'delete_site' site.id %}" 
-              onsubmit="return confirm('Delete this site and all its data?');">
-          {% csrf_token %}
-          <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-2xl text-sm font-medium">
-            Delete Site
-          </button>
+    <h1 class="text-4xl font-bold mb-2">{{ site.name }}</h1>
+    <p class="text-gray-600 mb-10">{{ site.postcode }} • {{ site.industry_type }}</p>
+
+    <!-- Upload Section -->
+    <div class="bg-white p-8 rounded-3xl shadow mb-10">
+        <h3 class="font-semibold text-xl mb-4">Upload Half-Hourly Consumption Data</h3>
+        <form method="post" enctype="multipart/form-data" class="flex flex-col md:flex-row gap-4">
+            {% csrf_token %}
+            <input type="file" name="csv_file" accept=".csv" required 
+                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-4 file:px-8 file:rounded-2xl file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+            <button type="submit" 
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-10 py-4 rounded-2xl font-semibold whitespace-nowrap">
+                Upload CSV
+            </button>
         </form>
-      </div>
-
-      <!-- Forecast Section -->
-      <div class="p-10">
-        <div class="flex justify-between items-center mb-10">
-          <h2 class="text-3xl font-semibold text-emerald-700">Tomorrow's Forecast & Recommendations</h2>
-          <a href="{% url 'site_detail' site.id %}" 
-             class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-6 py-3 rounded-2xl text-sm font-medium transition">
-            ↻ Refresh Forecast
-          </a>
-        </div>
-
-        <!-- Recommendation Box -->
-        <div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-8 mb-12">
-          <p class="text-lg leading-relaxed text-gray-700">{{ recommendation }}</p>
-        </div>
-
-        <!-- Estimated Earnings -->
-        <div class="bg-white border border-gray-200 rounded-3xl p-8 mb-12">
-          <div class="flex justify-between items-center">
-            <div>
-              <p class="text-sm text-gray-500">Estimated Flexibility Earnings</p>
-              <p class="text-4xl font-bold text-emerald-600">{{ estimated_earnings }}</p>
-            </div>
-            <div class="text-right text-sm text-gray-500">
-              Last updated: {{ last_updated }}
-            </div>
-          </div>
-        </div>
-
-        <!-- High Wind Periods -->
-        {% if forecast_data %}
-        <h3 class="text-2xl font-semibold mb-8">High Wind Periods (Next 48 Hours)</h3>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {% for hour in forecast_data %}
-          <div class="bg-white border border-gray-200 rounded-3xl p-8 text-center hover:shadow-md transition">
-            <div class="text-5xl font-bold text-emerald-600 mb-1">{{ hour.wind_speed }}</div>
-            <div class="text-sm text-gray-500">m/s</div>
-            <div class="mt-4 font-mono text-lg text-gray-600">{{ hour.time }}</div>
-            <div class="mt-6 text-xs font-medium px-5 py-2 bg-emerald-100 text-emerald-700 rounded-full inline-block">
-              Good for shifting
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-        {% endif %}
-      </div>
+        <p class="text-xs text-gray-500 mt-3">
+            CSV format: <code>timestamp,kwh,price_p_per_kwh</code> (timestamp = YYYY-MM-DD HH:MM:SS)
+        </p>
     </div>
-  </div>
+
+    <!-- Wind Forecast + Recommendations -->
+    <div class="grid md:grid-cols-2 gap-8">
+        <div>
+            <h3 class="font-semibold text-xl mb-4">Today's Wind Forecast</h3>
+            {% if forecast_data %}
+                <div class="bg-white p-6 rounded-3xl shadow">
+                    <!-- You can expand this with a small chart later -->
+                    <p class="text-emerald-600 font-medium">High wind periods detected</p>
+                </div>
+            {% else %}
+                <p class="text-gray-500">Loading forecast...</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <h3 class="font-semibold text-xl mb-4">Recommended Actions</h3>
+            {% if recommendations %}
+                <div class="space-y-4">
+                    {% for rec in recommendations %}
+                    <div class="bg-white p-6 rounded-3xl shadow border border-emerald-100">
+                        <p class="font-medium">{{ rec.time|slice:":16" }}</p>
+                        <p class="text-emerald-700">{{ rec.action }}</p>
+                        <p class="text-sm text-gray-600 mt-1">{{ rec.reason }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-500">No strong recommendations right now.</p>
+            {% endif %}
+        </div>
+    </div>
+
 </div>
 {% endblock %}
