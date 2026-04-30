@@ -100,9 +100,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'   # Change to 'mandatory' when ready
 CSRF_TRUSTED_ORIGINS = [
     'https://enershift.energy',
     'https://www.enershift.energy',
-    'https://*.railway.app',           # For development on Railway
+    'https://*.railway.app',
 ]
 
-# Also ensure these are set correctly
-DEBUG = True  # Keep True for now
-ALLOWED_HOSTS = ['*']  # Or specifically: ['enershift.energy', 'www.enershift.energy']
+ALLOWED_HOSTS = ['*']
+DEBUG = True
