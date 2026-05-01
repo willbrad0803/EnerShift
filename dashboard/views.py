@@ -16,7 +16,7 @@ import csv
 from datetime import datetime
 
 # ======================
-# Custom Registration Form
+# Custom Registration Form (Email as Username)
 # ======================
 class CustomUserCreationForm(forms.ModelForm):
     email = forms.EmailField(required=True, label="Email Address")
@@ -34,12 +34,11 @@ class CustomUserCreationForm(forms.ModelForm):
 
         if password1 and password2 and password1 != password2:
             self.add_error('password2', "Passwords do not match")
-        
         return cleaned_data
 
     def save(self, commit=True):
         user = User.objects.create_user(
-            username=self.cleaned_data['email'],
+            username=self.cleaned_data['email'],   # Email becomes username
             email=self.cleaned_data['email'],
             password=self.cleaned_data['password1']
         )
@@ -47,7 +46,7 @@ class CustomUserCreationForm(forms.ModelForm):
 
 
 # ======================
-# Registration View
+# Registration
 # ======================
 def register(request):
     if request.method == 'POST':
@@ -78,7 +77,7 @@ def register(request):
 
 
 # ======================
-# Email Activation
+# Email Activation + Login
 # ======================
 def activate(request, uidb64, token):
     try:
@@ -91,19 +90,18 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        messages.success(request, "✅ Email verified! You are now logged in.")
+        messages.success(request, "✅ Email verified successfully! You are now logged in.")
         return redirect('dashboard_home')
     else:
         return render(request, 'registration/activation_invalid.html')
 
 
 # ======================
-# Other Views (Dashboard)
+# Other Views (Keep these)
 # ======================
 @login_required
 def dashboard_home(request):
     sites = Site.objects.filter(user=request.user)
     return render(request, 'dashboard/home.html', {'sites': sites})
 
-# Add the rest of your views (add_site, site_detail, upload_consumption, delete_site) here...
-# (I can give you the full file if needed)
+# Add the rest of your views here (add_site, site_detail, upload_consumption, delete_site) as before
