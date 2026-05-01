@@ -16,7 +16,7 @@ import csv
 from datetime import datetime
 
 # ======================
-# Custom Registration Form (Email as Username)
+# Custom Form
 # ======================
 class CustomUserCreationForm(forms.ModelForm):
     email = forms.EmailField(required=True, label="Email Address")
@@ -45,27 +45,32 @@ class CustomUserCreationForm(forms.ModelForm):
 
 
 # ======================
-# Registration View
+# Registration
 # ======================
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            user.is_active = False
-            user.save()
+            try:
+                user = form.save()
+                user.is_active = False
+                user.save()
 
-            current_site = get_current_site(request)
-            subject = 'Activate your EnerShift account'
-            message = render_to_string('registration/account_activation_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': default_token_generator.make_token(user),
-            })
-            send_mail(subject, message, 'noreply@enershift.energy', [user.email])
+                current_site = get_current_site(request)
+                subject = 'Activate your EnerShift account'
+                message = render_to_string('registration/account_activation_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': default_token_generator.make_token(user),
+                })
+                send_mail(subject, message, 'noreply@enershift.energy', [user.email])
 
-            return render(request, 'registration/account_activation_sent.html')
+                return render(request, 'registration/account_activation_sent.html')
+            except Exception as e:
+                messages.error(request, "This email is already registered. Please login or use a different email.")
+        else:
+            messages.error(request, "Please check your inputs. Passwords must match.")
     else:
         form = CustomUserCreationForm()
 
@@ -76,7 +81,7 @@ def register(request):
 
 
 # ======================
-# Email Activation + Auto Login
+# Activation
 # ======================
 def activate(request, uidb64, token):
     try:
@@ -95,9 +100,7 @@ def activate(request, uidb64, token):
         return render(request, 'registration/activation_invalid.html')
 
 
-# ======================
-# Dashboard Views
-# ======================
+# Dashboard views (add_site, site_detail, etc.) remain the same...
 @login_required
 def dashboard_home(request):
     sites = Site.objects.filter(user=request.user)
