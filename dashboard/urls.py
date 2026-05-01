@@ -3,12 +3,16 @@ from django.contrib.auth.views import LoginView, LogoutView
 from . import views
 
 urlpatterns = [
+    # Auth
     path('login/', LoginView.as_view(
         template_name='registration/login.html',
         redirect_authenticated_user=True
     ), name='login'),
+    
     path('register/', views.register, name='register'),
+    path('activate/<uidb64>/<token>/', views.activate, name='activate'),   # ← This must be here
 
+    # Dashboard
     path('', views.dashboard_home, name='dashboard_home'),
     path('overview/', views.all_sites_overview, name='all_sites_overview'),
     path('add-site/', views.add_site, name='add_site'),
