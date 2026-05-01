@@ -89,15 +89,16 @@ ADMIN_LOGIN_REDIRECT = False
 
 # Use built-in login view (no allauth)
 
-# Email settings (use your own SMTP or a service like SendGrid/Gmail for production)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For testing - prints to console
-# For real emails later:
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'your-email@gmail.com'
-# EMAIL_HOST_PASSWORD = 'your-app-password'
+# ======================
+# Email Settings (Real Sending)
+# ======================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'willbrad0803@gmail.com'          # ← Change this
+EMAIL_HOST_PASSWORD = 'Avarose15%'          # ← Change this (the one from Google)
+DEFAULT_FROM_EMAIL = 'william.bradshaw@enershift.energy'
 
 # After registration, send confirmation email (optional but recommended)
 ACCOUNT_EMAIL_VERIFICATION = 'optional'   # Change to 'mandatory' when ready
