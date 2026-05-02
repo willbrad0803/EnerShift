@@ -41,26 +41,32 @@ class CustomUserCreationForm(forms.ModelForm):
         )
         return user
 
-
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            user.is_active = False
-            user.save()
+            try:
+                user = form.save()
+                user.is_active = False
+                user.save()
 
-            current_site = get_current_site(request)
-            subject = 'Activate your EnerShift account'
-            message = render_to_string('registration/account_activation_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': default_token_generator.make_token(user),
-            })
-            send_mail(subject, message, 'noreply@enershift.energy', [user.email])
+                current_site = get_current_site(request)
+                subject = 'Activate your EnerShift account'
+                message = render_to_string('registration/account_activation_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': default_token_generator.make_token(user),
+                })
+                send_mail(subject, message, 'noreply@enershift.energy', [user.email])
 
-            return render(request, 'registration/account_activation_sent.html')
+                return render(request, 'registration/account_activation_sent.html')
+            except Exception as e:
+                # Catch duplicate email/username
+                messages.error(request, "This email address is already registered. Please login or use a different email.")
+                form = CustomUserCreationForm()  # Reset form
+        else:
+            messages.error(request, "Please check your inputs. Passwords must match.")
     else:
         form = CustomUserCreationForm()
 
