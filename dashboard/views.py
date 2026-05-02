@@ -16,7 +16,7 @@ import csv
 from datetime import datetime
 
 # ======================
-# Custom Registration Form (Email as Username)
+# Custom Registration Form
 # ======================
 class CustomUserCreationForm(forms.ModelForm):
     email = forms.EmailField(required=True, label="Email Address")
@@ -29,9 +29,7 @@ class CustomUserCreationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        password1 = cleaned_data.get("password1")
-        password2 = cleaned_data.get("password2")
-        if password1 and password2 and password1 != password2:
+        if cleaned_data.get("password1") != cleaned_data.get("password2"):
             self.add_error('password2', "Passwords do not match")
         return cleaned_data
 
@@ -44,9 +42,6 @@ class CustomUserCreationForm(forms.ModelForm):
         return user
 
 
-# ======================
-# Registration View
-# ======================
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -68,8 +63,7 @@ def register(request):
 
                 return render(request, 'registration/account_activation_sent.html')
             except Exception:
-                messages.error(request, "This email address is already registered. Please login or use a different email.")
-                form = CustomUserCreationForm()
+                messages.error(request, "This email is already registered. Please try logging in.")
         else:
             messages.error(request, "Please check your inputs. Passwords must match.")
     else:
@@ -81,9 +75,6 @@ def register(request):
     })
 
 
-# ======================
-# Email Activation + Auto Login
-# ======================
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -95,7 +86,7 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        messages.success(request, "✅ Email verified successfully! You are now logged in.")
+        messages.success(request, "✅ Email verified! You are now logged in.")
         return redirect('dashboard_home')
     else:
         return render(request, 'registration/activation_invalid.html')
@@ -127,12 +118,7 @@ def add_site(request):
         postcode = request.POST.get('postcode')
         industry_type = request.POST.get('industry_type', 'Other')
         if name and postcode:
-            Site.objects.create(
-                user=request.user,
-                name=name,
-                postcode=postcode,
-                industry_type=industry_type
-            )
+            Site.objects.create(user=request.user, name=name, postcode=postcode, industry_type=industry_type)
             messages.success(request, f"Site '{name}' added successfully!")
             return redirect('dashboard_home')
     return render(request, 'dashboard/add_site.html')
