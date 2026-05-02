@@ -16,7 +16,7 @@ import csv
 from datetime import datetime
 
 # ======================
-# Custom Registration Form
+# Custom Form
 # ======================
 class CustomUserCreationForm(forms.ModelForm):
     email = forms.EmailField(required=True, label="Email Address")
@@ -42,6 +42,9 @@ class CustomUserCreationForm(forms.ModelForm):
         return user
 
 
+# ======================
+# Registration
+# ======================
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -63,7 +66,7 @@ def register(request):
 
                 return render(request, 'registration/account_activation_sent.html')
             except Exception:
-                messages.error(request, "This email is already registered. Please try logging in.")
+                messages.error(request, "This email address is already registered. Please login or use a different email.")
         else:
             messages.error(request, "Please check your inputs. Passwords must match.")
     else:
@@ -75,6 +78,9 @@ def register(request):
     })
 
 
+# ======================
+# Activation
+# ======================
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -92,14 +98,11 @@ def activate(request, uidb64, token):
         return render(request, 'registration/activation_invalid.html')
 
 
-# ======================
-# Dashboard Views
-# ======================
+# Dashboard Views (keep these)
 @login_required
 def dashboard_home(request):
     sites = Site.objects.filter(user=request.user)
     return render(request, 'dashboard/home.html', {'sites': sites})
-
 
 @login_required
 def all_sites_overview(request):
