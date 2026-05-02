@@ -16,7 +16,7 @@ import csv
 from datetime import datetime
 
 # ======================
-# Custom Form
+# Custom Registration Form (Email as Username)
 # ======================
 class CustomUserCreationForm(forms.ModelForm):
     email = forms.EmailField(required=True, label="Email Address")
@@ -29,7 +29,9 @@ class CustomUserCreationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        if cleaned_data.get("password1") != cleaned_data.get("password2"):
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
             self.add_error('password2', "Passwords do not match")
         return cleaned_data
 
@@ -41,6 +43,10 @@ class CustomUserCreationForm(forms.ModelForm):
         )
         return user
 
+
+# ======================
+# Registration View
+# ======================
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -61,10 +67,9 @@ def register(request):
                 send_mail(subject, message, 'noreply@enershift.energy', [user.email])
 
                 return render(request, 'registration/account_activation_sent.html')
-            except Exception as e:
-                # Catch duplicate email/username
+            except Exception:
                 messages.error(request, "This email address is already registered. Please login or use a different email.")
-                form = CustomUserCreationForm()  # Reset form
+                form = CustomUserCreationForm()
         else:
             messages.error(request, "Please check your inputs. Passwords must match.")
     else:
@@ -76,6 +81,9 @@ def register(request):
     })
 
 
+# ======================
+# Email Activation + Auto Login
+# ======================
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -87,13 +95,15 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        messages.success(request, "✅ Email verified! You are now logged in.")
+        messages.success(request, "✅ Email verified successfully! You are now logged in.")
         return redirect('dashboard_home')
     else:
         return render(request, 'registration/activation_invalid.html')
 
 
-# Dashboard views...
+# ======================
+# Dashboard Views
+# ======================
 @login_required
 def dashboard_home(request):
     sites = Site.objects.filter(user=request.user)
