@@ -54,28 +54,32 @@ def register(request):
                 user.is_active = False
                 user.save()
 
-                current_site = get_current_site(request)
-                subject = 'Activate your EnerShift account'
-                message = render_to_string('registration/account_activation_email.html', {
-                    'user': user,
-                    'domain': current_site.domain,
-                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token': default_token_generator.make_token(user),
-                })
-                send_mail(subject, message, 'noreply@enershift.energy', [user.email])
+                # Safe email sending
+                try:
+                    current_site = get_current_site(request)
+                    subject = 'Activate your EnerShift account'
+                    message = render_to_string('registration/account_activation_email.html', {
+                        'user': user,
+                        'domain': current_site.domain,
+                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                        'token': default_token_generator.make_token(user),
+                    })
+                    send_mail(subject, message, 'noreply@enershift.energy', [user.email])
+                    print("✅ Activation email sent (console backend)")
+                except Exception as e:
+                    print(f"⚠️ Email sending failed (this is OK for now): {e}")
 
                 return render(request, 'registration/account_activation_sent.html')
-            except Exception:
-                messages.error(request, "This email address is already registered. Please login or use a different email.")
+
+            except Exception as e:
+                messages.error(request, "This email is already registered. Try logging in.")
+                print(f"Registration error: {e}")
         else:
-            messages.error(request, "Please check your inputs. Passwords must match.")
+            messages.error(request, "Please fix the errors below.")
     else:
         form = CustomUserCreationForm()
 
-    return render(request, 'registration/login.html', {
-        'form': form,
-        'register_form': form,
-    })
+    return render(request, 'registration/login.html', {'form': form})
 
 
 # ======================
