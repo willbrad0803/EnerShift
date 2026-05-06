@@ -114,3 +114,9 @@ CSRF_TRUSTED_ORIGINS = [
 
 ALLOWED_HOSTS = ['*']
 DEBUG = True
+
+import os
+
+# FORCE CONSOLE - OVERRIDE EVERYTHING
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@enershift.energy'
