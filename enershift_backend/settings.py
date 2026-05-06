@@ -89,18 +89,18 @@ ADMIN_LOGIN_REDIRECT = False
 
 # Use built-in login view (no allauth)
 
-# ======================
-# FORCE CONSOLE EMAIL BACKEND
-# ======================
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+import os
 
-# Prevent any SMTP fallback
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 25
-EMAIL_USE_TLS = False
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-DEFAULT_FROM_EMAIL = 'noreply@enershift.energy'
+# ======================
+# EMAIL SETTINGS - SECURE
+# ======================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'william.bradshaw@enershift.energy'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = 'EnerShift <noreply@enershift.energy>'
 
 # After registration, send confirmation email (optional but recommended)
 ACCOUNT_EMAIL_VERIFICATION = 'optional'   # Change to 'mandatory' when ready
