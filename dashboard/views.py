@@ -54,28 +54,40 @@ def register(request):
                 user.is_active = False
                 user.save()
 
-                # Safe email sending
+                # Send activation email safely
                 try:
                     current_site = get_current_site(request)
+                    uid = urlsafe_base64_encode(force_bytes(user.pk))
+                    token = default_token_generator.make_token(user)
+                    activation_link = f"https://{current_site.domain}/dashboard/activate/{uid}/{token}/"
+
                     subject = 'Activate your EnerShift account'
-                    message = render_to_string('registration/account_activation_email.html', {
-                        'user': user,
-                        'domain': current_site.domain,
-                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                        'token': default_token_generator.make_token(user),
-                    })
-                    send_mail(subject, message, 'noreply@enershift.energy', [user.email])
-                    print("✅ Activation email sent (console backend)")
+                    message = f"""Hi {user.email},
+
+Thank you for signing up to EnerShift!
+
+Please click the link below to activate your account:
+
+{activation_link}
+
+This link expires in 48 hours.
+
+Best regards,
+The EnerShift Team"""
+
+                    send_mail(subject, message, DEFAULT_FROM_EMAIL, [user.email])
+                    print(f"✅ Activation email sent to {user.email}")
+                    print(f"Link: {activation_link}")
                 except Exception as e:
-                    print(f"⚠️ Email sending failed (this is OK for now): {e}")
+                    print(f"⚠️ Email sending failed: {e}")
 
                 return render(request, 'registration/account_activation_sent.html')
 
-            except Exception as e:
-                messages.error(request, "This email is already registered. Try logging in.")
+            except Exception as e:   # Catches duplicate email error
                 print(f"Registration error: {e}")
+                messages.error(request, "This email address is already registered. Please log in or use a different email.")
         else:
-            messages.error(request, "Please fix the errors below.")
+            messages.error(request, "Please check your inputs — passwords must match.")
     else:
         form = CustomUserCreationForm()
 
