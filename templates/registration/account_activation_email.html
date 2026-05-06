@@ -1,12 +1,12 @@
 {% autoescape off %}
-Hi {{ user.username }},
+Hi {{ user.email }},
 
 Please click on the link below to activate your EnerShift account:
 
-http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+http://www.enershift.energy/dashboard/activate/{{ uid }}/{{ token }}/
 
-If you didn't request this, please ignore this email.
+(If the link doesn't work, copy and paste the URL into your browser.)
 
-Best regards,
+Thanks,
 The EnerShift Team
 {% endautoescape %}
