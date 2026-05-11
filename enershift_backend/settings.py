@@ -97,7 +97,7 @@ import os
 # PRODUCTION-READY EMAIL (Console for now)
 # ======================
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'EnerShift <noreply@enershift.energy>'
+DEFAULT_FROM_EMAIL = 'EnerShift <william.bradshaw@enershift.energy>'
 
 # Production Security
 DEBUG = False
