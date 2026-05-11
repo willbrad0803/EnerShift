@@ -106,8 +106,8 @@ def dashboard_home(request):
     sites = Site.objects.filter(user=request.user)
     return render(request, 'dashboard/home.html', {'sites': sites})
 
-# Logout
+
 def custom_logout(request):
     logout(request)
-    messages.success(request, "You have been logged out.")
+    messages.success(request, "You have been logged out successfully.")
     return redirect('home')
