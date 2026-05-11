@@ -91,19 +91,21 @@ ADMIN_LOGIN_REDIRECT = False
 
 import os
 
+import os
+
 # ======================
-# EMAIL SETTINGS - SECURE
+# PRODUCTION-READY EMAIL (Console for now)
 # ======================
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'william.bradshaw@enershift.energy'
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'EnerShift <noreply@enershift.energy>'
 
-# After registration, send confirmation email (optional but recommended)
-ACCOUNT_EMAIL_VERIFICATION = 'optional'   # Change to 'mandatory' when ready
+# Production Security
+DEBUG = False
+ALLOWED_HOSTS = ['www.enershift.energy', 'enershift.energy', '.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://www.enershift.energy', 'https://enershift.energy']
+
+# For future real SMTP (set on Railway Variables)
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # Security & CSRF Settings
 CSRF_TRUSTED_ORIGINS = [
