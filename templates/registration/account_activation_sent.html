@@ -3,17 +3,16 @@
 {% block content %}
 <div class="max-w-md mx-auto px-6 py-20 text-center">
     <div class="bg-white rounded-3xl shadow-xl p-10">
-        <div class="w-16 h-16 bg-emerald-100 rounded-full mx-auto flex items-center justify-center mb-6">
-            <span class="text-3xl">📧</span>
+        <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full mx-auto flex items-center justify-center mb-6 text-4xl">
+            📧
         </div>
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">Check your email</h2>
+        <h2 class="text-3xl font-bold mb-4">Check your inbox</h2>
         <p class="text-gray-600 mb-8">
-            We've sent an activation link to <strong>{{ email|default:"your email" }}</strong>.<br>
-            Please click the link inside to activate your account.
+            We've sent an activation link to <strong>{{ email }}</strong>.
         </p>
         <p class="text-sm text-gray-500">
-            Didn't receive it? Check your spam folder or 
-            <a href="/dashboard/login/" class="text-emerald-600 hover:underline">try logging in</a>.
+            Please check your spam folder if you don't see it.<br>
+            <a href="/dashboard/login/" class="text-emerald-600 hover:underline">Back to Login</a>
         </p>
     </div>
 </div>
