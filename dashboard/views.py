@@ -4,16 +4,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django import forms
 from .models import Site
-import requests
 
-# Custom Form
 class CustomUserCreationForm(forms.ModelForm):
     email = forms.EmailField(required=True, label="Email Address")
     password1 = forms.CharField(widget=forms.PasswordInput, label="Password")
@@ -38,7 +35,6 @@ class CustomUserCreationForm(forms.ModelForm):
         return user
 
 
-# Register
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -51,7 +47,7 @@ def register(request):
                 current_site = get_current_site(request)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
                 token = default_token_generator.make_token(user)
-                activation_link = f"https://{current_site.domain}/dashboard/activate/{uid}/{token}/"
+                activation_link = f"https://www.enershift.energy/dashboard/activate/{uid}/{token}/"
 
                 subject = 'Activate your EnerShift account'
                 message = f"""Hi {user.email},
@@ -67,22 +63,22 @@ This link expires in 48 hours.
 Best regards,
 The EnerShift Team"""
 
-                send_mail(subject, message, DEFAULT_FROM_EMAIL, [user.email])
+                send_mail(subject, message, 'noreply@enershift.energy', [user.email])
                 print(f"✅ Activation email sent to {user.email}")
+                print(f"Link: {activation_link}")
 
                 return render(request, 'registration/account_activation_sent.html', {'email': user.email})
 
             except Exception as e:
                 messages.error(request, "This email is already registered. Please log in.")
         else:
-            messages.error(request, "Please check your inputs — passwords must match.")
+            messages.error(request, "Passwords must match.")
     else:
         form = CustomUserCreationForm()
 
     return render(request, 'registration/login.html', {'form': form})
 
 
-# Activate
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -94,13 +90,12 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        messages.success(request, "✅ Your account has been activated successfully!")
+        messages.success(request, "✅ Account activated successfully! Welcome to EnerShift.")
         return redirect('dashboard_home')
     else:
         return render(request, 'registration/activation_invalid.html')
 
 
-# Dashboard
 @login_required
 def dashboard_home(request):
     sites = Site.objects.filter(user=request.user)
@@ -109,5 +104,5 @@ def dashboard_home(request):
 
 def custom_logout(request):
     logout(request)
-    messages.success(request, "You have been logged out successfully.")
+    messages.success(request, "You have been logged out.")
     return redirect('home')
