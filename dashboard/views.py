@@ -97,13 +97,41 @@ def activate(request, uidb64, token):
         return render(request, 'registration/activation_invalid.html')
 
 
+# ======================
+# DASHBOARD VIEWS
+# ======================
+
 @login_required
 def dashboard_home(request):
     sites = Site.objects.filter(user=request.user)
     return render(request, 'dashboard/home.html', {'sites': sites})
 
 
-def custom_logout(request):
-    logout(request)
-    messages.success(request, "You have been logged out.")
-    return redirect('home')
+@login_required
+def add_site(request):
+    if request.method == 'POST':
+        name = request.POST.get('name', 'New Site')
+        postcode = request.POST.get('postcode', '')
+        site = Site.objects.create(
+            user=request.user,
+            name=name,
+            postcode=postcode
+        )
+        messages.success(request, f"Site '{name}' created successfully.")
+        return redirect('site_detail', site_id=site.id)
+    
+    return render(request, 'dashboard/add_site.html')
+
+
+@login_required
+def site_detail(request, site_id):
+    site = get_object_or_404(Site, id=site_id, user=request.user)
+    return render(request, 'dashboard/site_detail.html', {'site': site})
+
+
+@login_required
+def delete_site(request, site_id):
+    site = get_object_or_404(Site, id=site_id, user=request.user)
+    site.delete()
+    messages.success(request, "Site deleted successfully.")
+    return redirect('dashboard_home')
