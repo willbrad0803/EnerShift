@@ -83,16 +83,17 @@ def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = User.objects.get(pk=uid)
-    except:
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
 
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
         login(request, user)
-        messages.success(request, "✅ Account activated successfully! Welcome to EnerShift.")
+        messages.success(request, "✅ Your account has been successfully activated!")
         return redirect('dashboard_home')
     else:
+        print("❌ Activation failed - invalid token or user")
         return render(request, 'registration/activation_invalid.html')
 
 
