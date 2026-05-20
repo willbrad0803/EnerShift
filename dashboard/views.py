@@ -89,11 +89,10 @@ def activate(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        login(request, user)
-        messages.success(request, "✅ Your account has been successfully activated!")
+        login(request, user)   # This should log them in
+        messages.success(request, "✅ Account activated successfully! Welcome to EnerShift.")
         return redirect('dashboard_home')
     else:
-        print("❌ Activation failed - invalid token or user")
         return render(request, 'registration/activation_invalid.html')
 
 from django.shortcuts import get_object_or_404
