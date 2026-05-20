@@ -20,7 +20,7 @@
             <a href="{% url 'site_detail' site.id %}" class="block">
               <div class="card bg-white p-8 hover:shadow-2xl transition-all">
                 <h3 class="text-2xl font-semibold mb-3">{{ site.name }}</h3>
-                <p class="text-gray-500">{{ site.postcode }} • {{ site.get_industry_type_display }}</p>
+                <p class="text-gray-500">{{ site.postcode }}</p>
               </div>
             </a>
             {% endfor %}
@@ -34,27 +34,24 @@
         {% endif %}
       </div>
 
-      <!-- Sidebar: Help / Getting Started -->
+      <!-- Sidebar -->
       <div>
         <div class="bg-white rounded-3xl shadow p-8">
-          <h3 class="text-xl font-semibold mb-6">Help & Getting Started</h3>
+          <h3 class="text-xl font-semibold mb-6">Getting Started</h3>
           <div class="space-y-6 text-sm">
             <div>
               <p class="font-medium text-emerald-700">1. Add Sites</p>
-              <p class="text-gray-600">Add your warehouses, supermarkets or industrial sites.</p>
+              <p class="text-gray-600">Add your facilities above.</p>
             </div>
             <div>
               <p class="font-medium text-emerald-700">2. View Forecasts</p>
-              <p class="text-gray-600">See when wind is strong and cheap energy is available.</p>
+              <p class="text-gray-600">See when wind is strong.</p>
             </div>
             <div>
               <p class="font-medium text-emerald-700">3. Shift Load</p>
-              <p class="text-gray-600">Move energy-heavy processes to windy hours to save money and earn from flexibility markets.</p>
+              <p class="text-gray-600">Save money and earn from flexibility markets.</p>
             </div>
           </div>
-          <a href="{% url 'all_sites_overview' %}" class="block mt-10 text-center bg-gray-100 hover:bg-gray-200 py-3 rounded-2xl text-sm font-medium">
-            View All Sites Overview
-          </a>
         </div>
       </div>
     </div>
