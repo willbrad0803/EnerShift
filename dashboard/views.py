@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
@@ -11,6 +11,9 @@ from django.contrib.sites.shortcuts import get_current_site
 from django import forms
 from .models import Site
 
+# ======================
+# CUSTOM REGISTRATION FORM
+# ======================
 class CustomUserCreationForm(forms.ModelForm):
     email = forms.EmailField(required=True, label="Email Address")
     password1 = forms.CharField(widget=forms.PasswordInput, label="Password")
@@ -35,6 +38,9 @@ class CustomUserCreationForm(forms.ModelForm):
         return user
 
 
+# ======================
+# REGISTER
+# ======================
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -79,28 +85,29 @@ The EnerShift Team"""
     return render(request, 'registration/login.html', {'form': form})
 
 
+# ======================
+# ACTIVATE
+# ======================
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+    except:
         user = None
 
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        login(request, user)   # This should log them in
+        login(request, user)
         messages.success(request, "✅ Account activated successfully! Welcome to EnerShift.")
         return redirect('dashboard_home')
     else:
         return render(request, 'registration/activation_invalid.html')
 
-from django.shortcuts import get_object_or_404
 
 # ======================
 # DASHBOARD VIEWS
 # ======================
-
 @login_required
 def dashboard_home(request):
     sites = Site.objects.filter(user=request.user)
@@ -130,3 +137,9 @@ def delete_site(request, site_id):
     site.delete()
     messages.success(request, "Site deleted successfully.")
     return redirect('dashboard_home')
+
+
+def custom_logout(request):
+    logout(request)
+    messages.success(request, "You have been logged out.")
+    return redirect('home')
