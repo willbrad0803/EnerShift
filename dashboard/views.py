@@ -96,10 +96,11 @@ def activate(request, uidb64, token):
         print("❌ Activation failed - invalid token or user")
         return render(request, 'registration/activation_invalid.html')
 
-
 from django.shortcuts import get_object_or_404
 
-# === DASHBOARD VIEWS ===
+# ======================
+# DASHBOARD VIEWS
+# ======================
 
 @login_required
 def dashboard_home(request):
@@ -113,7 +114,7 @@ def add_site(request):
         name = request.POST.get('name', 'New Site')
         postcode = request.POST.get('postcode', '')
         site = Site.objects.create(user=request.user, name=name, postcode=postcode)
-        messages.success(request, f"Site '{name}' added.")
+        messages.success(request, f"Site '{name}' created successfully.")
         return redirect('site_detail', site_id=site.id)
     return render(request, 'dashboard/add_site.html')
 
@@ -128,5 +129,5 @@ def site_detail(request, site_id):
 def delete_site(request, site_id):
     site = get_object_or_404(Site, id=site_id, user=request.user)
     site.delete()
-    messages.success(request, "Site deleted.")
+    messages.success(request, "Site deleted successfully.")
     return redirect('dashboard_home')
