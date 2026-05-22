@@ -9,11 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-SITE_ID = 1
-
-DEBUG = True
+DEBUG = True  # Change to False for production later
 
 ALLOWED_HOSTS = ['.railway.app', 'enershift.energy', 'www.enershift.energy', '127.0.0.1', 'localhost']
+
+SITE_ID = 1
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -22,8 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'whitenoise.runserver_nostatic',
     'django.contrib.sites',
+    'whitenoise.runserver_nostatic',
     'django_htmx',
     'dashboard',
 ]
@@ -60,65 +60,36 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'enershift_backend.wsgi.application'
 
-import dj_database_url
-
+# Database - Railway Postgres
 DATABASES = {
     'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',  # Fallback for local
+        default='sqlite:///db.sqlite3',
         conn_max_age=600,
         conn_health_checks=True,
     )
 }
 
+# Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-SECURE_SSL_REDIRECT = False
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
-
-# Authentication settings
-LOGIN_URL = '/dashboard/login/'
-LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/'
-
-# Disable admin login redirect to custom login if needed
-ADMIN_LOGIN_REDIRECT = False
-
-# Use built-in login view (no allauth)
-
-import os
-
-import os
-
-# ======================
-# PRODUCTION-READY EMAIL (Console for now)
-# ======================
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'EnerShift <william.bradshaw@enershift.energy>'
-
-# Production Security
-DEBUG = False
-ALLOWED_HOSTS = ['www.enershift.energy', 'enershift.energy', '.railway.app']
-CSRF_TRUSTED_ORIGINS = ['https://www.enershift.energy', 'https://enershift.energy']
-
-# For future real SMTP (set on Railway Variables)
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
-# Security & CSRF Settings
+# Security
 CSRF_TRUSTED_ORIGINS = [
     'https://enershift.energy',
     'https://www.enershift.energy',
     'https://*.railway.app',
 ]
 
-ALLOWED_HOSTS = ['*']
-DEBUG = True
+# Authentication
+LOGIN_URL = '/dashboard/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
 
-import os
-
-# FORCE CONSOLE - OVERRIDE EVERYTHING
+# Email (Console for testing)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'noreply@enershift.energy'
+
+# For future real SMTP (use Railway Variables)
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
