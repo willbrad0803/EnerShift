@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -11,13 +11,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django import forms
 from .models import Site
 
-from django.contrib.auth.views import LoginView
 
-class CustomLoginView(LoginView):
-    template_name = 'registration/login.html'
-    redirect_authenticated_user = True
-
-# Custom Registration Form
 class CustomUserCreationForm(forms.ModelForm):
     email = forms.EmailField(required=True)
     password1 = forms.CharField(widget=forms.PasswordInput)
@@ -42,7 +36,6 @@ class CustomUserCreationForm(forms.ModelForm):
         return user
 
 
-# Register
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -52,32 +45,19 @@ def register(request):
                 user.is_active = False
                 user.save()
 
-                               # FIXED: Clean activation link generation
                 current_site = get_current_site(request)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
                 token = default_token_generator.make_token(user)
-                
-                # Force clean URL
                 activation_link = f"https://www.enershift.energy/dashboard/activate/{uid}/{token}/"
 
-                subject = 'Activate your EnerShift account'
-                message = f"""Hi {user.email},
-
-Thank you for signing up to EnerShift!
-
-Please click the link below to activate your account:
-
-{activation_link}
-
-This link expires in 48 hours.
-
-Best regards,
-The EnerShift Team"""
-
-                send_mail(subject, message, 'noreply@enershift.energy', [user.email])
+                send_mail(
+                    'Activate your EnerShift account',
+                    f"Click here to activate: {activation_link}",
+                    'noreply@enershift.energy',
+                    [user.email]
+                )
                 return render(request, 'registration/account_activation_sent.html', {'email': user.email})
-
-            except Exception:
+            except:
                 messages.error(request, "This email is already registered.")
         else:
             messages.error(request, "Passwords must match.")
@@ -87,7 +67,6 @@ The EnerShift Team"""
     return render(request, 'registration/login.html', {'form': form})
 
 
-# Activate
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -99,51 +78,19 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        messages.success(request, "✅ Account activated! Welcome.")
+        messages.success(request, "✅ Account activated! Welcome to EnerShift.")
         return redirect('dashboard_home')
     else:
         return render(request, 'registration/activation_invalid.html')
 
 
-# Login (using Django's built-in)
-from django.contrib.auth.views import LoginView
-
-class CustomLoginView(LoginView):
-    template_name = 'registration/login.html'
-    redirect_authenticated_user = True
-
-
-# Logout
-def custom_logout(request):
-    logout(request)
-    messages.success(request, "Logged out successfully.")
-    return redirect('home')
-
-
-# Dashboard Views
 @login_required
 def dashboard_home(request):
     sites = Site.objects.filter(user=request.user)
     return render(request, 'dashboard/home.html', {'sites': sites})
 
-@login_required
-def add_site(request):
-    if request.method == 'POST':
-        name = request.POST.get('name', 'New Site')
-        postcode = request.POST.get('postcode', '')
-        site = Site.objects.create(user=request.user, name=name, postcode=postcode)
-        messages.success(request, f"Site '{name}' created.")
-        return redirect('site_detail', site_id=site.id)
-    return render(request, 'dashboard/add_site.html')
 
-@login_required
-def site_detail(request, site_id):
-    site = get_object_or_404(Site, id=site_id, user=request.user)
-    return render(request, 'dashboard/site_detail.html', {'site': site})
-
-@login_required
-def delete_site(request, site_id):
-    site = get_object_or_404(Site, id=site_id, user=request.user)
-    site.delete()
-    messages.success(request, "Site deleted.")
-    return redirect('dashboard_home')
+def custom_logout(request):
+    logout(request)
+    messages.success(request, "Logged out.")
+    return redirect('home')
