@@ -8,7 +8,7 @@ urlpatterns = [
     path('site/<int:site_id>/', views.site_detail, name='site_detail'),
     path('delete/<int:site_id>/', views.delete_site, name='delete_site'),
 
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', views.custom_logout, name='logout'),
     path('register/', views.register, name='register'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
