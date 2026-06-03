@@ -9,9 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True  # Change to False for production later
+DEBUG = True
 
-ALLOWED_HOSTS = ['.railway.app', 'enershift.energy', 'www.enershift.energy', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['*']
 
 SITE_ID = 1
 
@@ -60,45 +60,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'enershift_backend.wsgi.application'
 
-# Database - Railway Postgres
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    'default': dj_database_url.config(default='sqlite:///db.sqlite3')
 }
 
-# Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Security
-CSRF_TRUSTED_ORIGINS = [
-    'https://enershift.energy',
-    'https://www.enershift.energy',
-    'https://*.railway.app',
-]
 
 # Authentication
 LOGIN_URL = '/dashboard/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Email (Console for testing)
+# Email (Console)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'noreply@enershift.energy'
 
-# For future real SMTP (use Railway Variables)
-# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
-# Session & Login Settings
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_AGE = 86400 * 30  # 30 days
-SESSION_SAVE_EVERY_REQUEST = True
-
-LOGIN_URL = '/dashboard/login/'
-LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/'
+CSRF_TRUSTED_ORIGINS = ['https://*.enershift.energy', 'https://*.railway.app']
