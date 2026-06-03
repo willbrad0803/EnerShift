@@ -52,20 +52,27 @@ def register(request):
                 user.is_active = False
                 user.save()
 
+                               # FIXED: Clean activation link generation
                 current_site = get_current_site(request)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
                 token = default_token_generator.make_token(user)
+                
+                # Force clean URL
                 activation_link = f"https://www.enershift.energy/dashboard/activate/{uid}/{token}/"
 
                 subject = 'Activate your EnerShift account'
                 message = f"""Hi {user.email},
 
-Thank you for signing up!
+Thank you for signing up to EnerShift!
 
-Please click here to activate: {activation_link}
+Please click the link below to activate your account:
 
-Best,
-EnerShift Team"""
+{activation_link}
+
+This link expires in 48 hours.
+
+Best regards,
+The EnerShift Team"""
 
                 send_mail(subject, message, 'noreply@enershift.energy', [user.email])
                 return render(request, 'registration/account_activation_sent.html', {'email': user.email})
