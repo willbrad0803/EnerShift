@@ -11,6 +11,12 @@ from django.contrib.sites.shortcuts import get_current_site
 from django import forms
 from .models import Site
 
+from django.contrib.auth.views import LoginView
+
+class CustomLoginView(LoginView):
+    template_name = 'registration/login.html'
+    redirect_authenticated_user = True
+
 # Custom Registration Form
 class CustomUserCreationForm(forms.ModelForm):
     email = forms.EmailField(required=True)
