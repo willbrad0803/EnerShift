@@ -83,4 +83,8 @@ LOGOUT_REDIRECT_URL = '/'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'noreply@enershift.energy'
 
-CSRF_TRUSTED_ORIGINS = ['https://*.enershift.energy', 'https://*.railway.app']
+CSRF_TRUSTED_ORIGINS = [
+    'https://enershift.energy',
+    'https://www.enershift.energy',
+    'https://*.railway.app'
+]
