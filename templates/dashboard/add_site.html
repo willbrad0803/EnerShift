@@ -1,48 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="min-h-screen bg-[var(--light)] py-16">
-  <div class="max-w-lg mx-auto bg-white rounded-3xl shadow-xl p-12">
-    <h1 class="text-3xl font-bold mb-10 text-center">Add New Site</h1>
-    
-    <form method="post" class="space-y-8">
-      {% csrf_token %}
-      
-      <div>
-        <label class="block text-sm font-medium mb-3">Site Name</label>
-        <input type="text" name="name" required 
-               class="w-full border border-gray-300 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-[var(--primary)]"
-               placeholder="e.g. Trafford Park Warehouse">
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium mb-3">Postcode</label>
-        <input type="text" name="postcode" required 
-               class="w-full border border-gray-300 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-[var(--primary)]"
-               placeholder="M17 1AA">
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium mb-3">Industry Type</label>
-        <select name="industry_type" 
-                class="w-full border border-gray-300 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-[var(--primary)]">
-          <option value="warehouse">Warehouse / Distribution</option>
-          <option value="supermarket">Supermarket / Retail</option>
-          <option value="industrial">Industrial / Manufacturing</option>
-          <option value="data_centre">Data Centre</option>
-          <option value="community">Community Energy</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
-
-      <button type="submit" class="w-full cta-btn py-4 text-lg font-semibold">
-        Add Site & Get Forecast
-      </button>
-    </form>
-
-    <div class="text-center mt-10">
-      <a href="{% url 'dashboard_home' %}" class="text-gray-500 hover:text-[var(--primary)]">← Back to Dashboard</a>
+<div class="max-w-lg mx-auto px-6 py-20">
+    <div class="bg-white rounded-3xl shadow-xl p-10">
+        <h2 class="text-3xl font-bold mb-8">Add New Site</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Site Name</label>
+                    <input type="text" name="name" required class="w-full border border-gray-300 rounded-2xl px-5 py-4">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Postcode</label>
+                    <input type="text" name="postcode" required class="w-full border border-gray-300 rounded-2xl px-5 py-4" placeholder="M1 1AA">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Industry Type</label>
+                    <select name="industry_type" class="w-full border border-gray-300 rounded-2xl px-5 py-4">
+                        <option value="MANUFACTURING">Manufacturing</option>
+                        <option value="FOOD_PROCESSING">Food Processing</option>
+                        <option value="RETAIL">Retail / Supermarket</option>
+                        <option value="WAREHOUSE">Warehouse / Logistics</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-2xl font-semibold">
+                    Add Site
+                </button>
+            </div>
+        </form>
     </div>
-  </div>
 </div>
 {% endblock %}
