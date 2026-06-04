@@ -64,26 +64,29 @@ DATABASES = {
     'default': dj_database_url.config(default='sqlite:///db.sqlite3')
 }
 
+# === STATIC FILES ===
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# SESSION SETTINGS - THIS IS KEY FOR LOGIN PERSISTENCE
+# === SESSION SETTINGS (Critical for login to remember) ===
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600  # 14 days
 SESSION_SAVE_EVERY_REQUEST = True
-SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False   # Set to True only after HTTPS is stable
+SESSION_COOKIE_HTTPONLY = True
 
-# Authentication
+# === AUTHENTICATION ===
 LOGIN_URL = '/dashboard/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Email
+# === EMAIL ===
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'noreply@enershift.energy'
 
+# === SECURITY ===
 CSRF_TRUSTED_ORIGINS = [
     'https://enershift.energy',
     'https://www.enershift.energy',
