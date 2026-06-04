@@ -2,12 +2,62 @@
 
 {% block content %}
 <div class="max-w-7xl mx-auto px-6 py-12">
-    <h1 class="text-4xl font-bold mb-4">EnerShift Dashboard</h1>
-    <p class="text-gray-600 mb-10">Welcome back! Your account is active.</p>
-    
-    <div class="bg-white rounded-3xl shadow p-12 text-center">
-        <p class="text-xl mb-8">Site management and wind forecasts coming soon.</p>
-        <p class="text-gray-500">You're successfully logged in.</p>
+    <div class="flex justify-between items-center mb-10">
+        <div>
+            <h1 class="text-4xl font-bold">EnerShift Dashboard</h1>
+            <p class="text-gray-600 mt-2">Manage your sites • Wind forecasts • Shift recommendations</p>
+        </div>
+        <a href="{% url 'add_site' %}" 
+           class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-2xl font-semibold flex items-center gap-2">
+            + Add New Site
+        </a>
+    </div>
+
+    <!-- Wind Map Widget -->
+    <div class="bg-white rounded-3xl shadow p-8 mb-10">
+        <h3 class="text-2xl font-semibold mb-6">Live North West Wind Forecast</h3>
+        <div id="wind-map" style="height: 420px; border-radius: 16px; overflow: hidden;"></div>
+    </div>
+
+    <!-- Sites Overview -->
+    <div class="grid md:grid-cols-2 gap-8">
+        {% if sites %}
+            {% for site in sites %}
+            <div class="bg-white rounded-3xl shadow p-8">
+                <h3 class="text-2xl font-semibold">{{ site.name }}</h3>
+                <p class="text-gray-500">{{ site.postcode }} • {{ site.get_industry_type_display|default:"Industrial" }}</p>
+                <div class="mt-8 pt-6 border-t">
+                    <p class="text-emerald-600 font-medium">Next recommended shift: <span class="font-bold">Tonight 2-5am</span></p>
+                    <p class="text-sm text-gray-600 mt-1">Est. savings: £85–£140 per event</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-span-2 bg-white rounded-3xl shadow p-16 text-center">
+                <h3 class="text-3xl font-semibold mb-4">No sites added yet</h3>
+                <p class="text-gray-600 mb-8">Add your first site to get personalised wind forecasts and shift recommendations.</p>
+                <a href="{% url 'add_site' %}" class="inline-block bg-emerald-600 text-white px-10 py-4 rounded-2xl font-semibold">
+                    + Add Your First Site
+                </a>
+            </div>
+        {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<script>
+// Simple North West Wind Map
+const map = L.map('wind-map').setView([53.5, -2.5], 8);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap'
+}).addTo(map);
+
+L.marker([53.48, -2.24]).addTo(map)
+    .bindPopup("<b>Manchester Area</b><br>Strong winds expected tonight");
+</script>
 {% endblock %}
