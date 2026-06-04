@@ -59,12 +59,9 @@ def register(request):
                 return render(request, 'registration/account_activation_sent.html', {'email': user.email})
             except:
                 messages.error(request, "This email is already registered.")
-        else:
-            messages.error(request, "Passwords must match.")
     else:
         form = CustomUserCreationForm()
-
-    return render(request, 'registration/login.html', {'form': form})
+    return render(request, 'registration/login.html')
 
 
 def activate(request, uidb64, token):
@@ -78,10 +75,9 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        messages.success(request, "✅ Account activated! Welcome.")
+        messages.success(request, "✅ Account activated successfully!")
         return redirect('dashboard_home')
-    else:
-        return render(request, 'registration/activation_invalid.html')
+    return render(request, 'registration/activation_invalid.html')
 
 
 @login_required
@@ -90,7 +86,26 @@ def dashboard_home(request):
     return render(request, 'dashboard/home.html', {'sites': sites})
 
 
+@login_required
+def add_site(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        postcode = request.POST.get('postcode')
+        industry = request.POST.get('industry_type', 'OTHER')
+        if name and postcode:
+            site = Site.objects.create(
+                user=request.user,
+                name=name,
+                postcode=postcode,
+                industry_type=industry
+            )
+            messages.success(request, f"Site '{name}' added successfully!")
+            return redirect('dashboard_home')
+    return render(request, 'dashboard/add_site.html')
+
+
+@login_required
 def custom_logout(request):
     logout(request)
-    messages.success(request, "Logged out.")
+    messages.success(request, "You have been logged out.")
     return redirect('home')
