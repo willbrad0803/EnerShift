@@ -13,9 +13,9 @@ from .models import Site
 
 
 class CustomUserCreationForm(forms.ModelForm):
-    email = forms.EmailField(required=True, label="Email Address")
-    password1 = forms.CharField(widget=forms.PasswordInput, label="Password")
-    password2 = forms.CharField(widget=forms.PasswordInput, label="Confirm Password")
+    email = forms.EmailField(required=True)
+    password1 = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
         model = User
@@ -52,12 +52,12 @@ def register(request):
 
                 send_mail(
                     'Activate your EnerShift account',
-                    f"Hi {user.email},\n\nPlease click here to activate your account:\n{activation_link}\n\nThis link expires in 48 hours.\n\nBest regards,\nThe EnerShift Team",
+                    f"Click here to activate: {activation_link}",
                     'noreply@enershift.energy',
                     [user.email]
                 )
                 return render(request, 'registration/account_activation_sent.html', {'email': user.email})
-            except Exception:
+            except:
                 messages.error(request, "This email is already registered.")
         else:
             messages.error(request, "Passwords must match.")
@@ -78,10 +78,11 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        messages.success(request, "✅ Account activated successfully! Welcome to EnerShift.")
+        messages.success(request, "✅ Account activated! Welcome.")
         return redirect('dashboard_home')
     else:
         return render(request, 'registration/activation_invalid.html')
+
 
 @login_required
 def dashboard_home(request):
@@ -91,5 +92,5 @@ def dashboard_home(request):
 
 def custom_logout(request):
     logout(request)
-    messages.success(request, "You have been logged out.")
+    messages.success(request, "Logged out.")
     return redirect('home')
