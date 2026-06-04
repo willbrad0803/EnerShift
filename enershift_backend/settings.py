@@ -69,10 +69,11 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# SESSION SETTINGS - CRITICAL FOR LOGIN PERSISTENCE
+# SESSION SETTINGS - THIS IS KEY FOR LOGIN PERSISTENCE
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600  # 14 days
 SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_SECURE = False
 
 # Authentication
 LOGIN_URL = '/dashboard/login/'
