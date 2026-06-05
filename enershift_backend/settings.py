@@ -60,14 +60,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'enershift_backend.wsgi.application'
 
-# === DATABASE - FORCE POSTGRES ON RAILWAY ===
-DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+# === DATABASE - Force Railway Postgres ===
+if 'DATABASE_URL' in os.environ:
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ['DATABASE_URL'])
+    }
+    DATABASES['default']['CONN_MAX_AGE'] = 600
+    DATABASES['default']['conn_health_checks'] = True
+else:
+    DATABASES = {
+        'default': dj_database_url.config(default='sqlite:///db.sqlite3')
+    }
 
 # === STATIC FILES ===
 STATIC_URL = '/static/'
