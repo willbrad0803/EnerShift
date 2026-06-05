@@ -48,19 +48,20 @@ def register(request):
                 current_site = get_current_site(request)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
                 token = default_token_generator.make_token(user)
-                activation_link = f"https://www.enershift.energy/dashboard/activate/{uid}/{token}/"
+                activation_link = f"https://{current_site.domain}/dashboard/activate/{uid}/{token}/"
 
                 send_mail(
                     'Activate your EnerShift account',
-                    f"Click here to activate: {activation_link}",
+                    f"Click here to activate your account:\n\n{activation_link}",
                     'noreply@enershift.energy',
-                    [user.email]
+                    [user.email],
+                    fail_silently=True,
                 )
                 return render(request, 'registration/account_activation_sent.html', {'email': user.email})
-            except:
+            except Exception as e:
                 messages.error(request, "This email is already registered.")
-    else:
-        form = CustomUserCreationForm()
+        else:
+            messages.error(request, "Form error. Passwords must match.")
     return render(request, 'registration/login.html')
 
 
@@ -71,13 +72,14 @@ def activate(request, uidb64, token):
     except:
         user = None
 
-    if user is not None:
+    if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
         login(request, user)
-        messages.success(request, "✅ Account activated successfully!")
+        messages.success(request, "✅ Account activated successfully! Welcome to EnerShift.")
         return redirect('dashboard_home')
-    return render(request, 'registration/activation_invalid.html')
+    else:
+        return render(request, 'registration/activation_invalid.html')
 
 
 @login_required
@@ -93,19 +95,13 @@ def add_site(request):
         postcode = request.POST.get('postcode')
         industry = request.POST.get('industry_type', 'OTHER')
         if name and postcode:
-            site = Site.objects.create(
-                user=request.user,
-                name=name,
-                postcode=postcode,
-                industry_type=industry
-            )
-            messages.success(request, f"Site '{name}' added successfully!")
+            Site.objects.create(user=request.user, name=name, postcode=postcode, industry_type=industry)
+            messages.success(request, f"Site '{name}' added!")
             return redirect('dashboard_home')
     return render(request, 'dashboard/add_site.html')
 
 
-@login_required
 def custom_logout(request):
     logout(request)
-    messages.success(request, "You have been logged out.")
+    messages.success(request, "Logged out successfully.")
     return redirect('home')
