@@ -78,13 +78,14 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# === SESSION SETTINGS (Critical) ===
+# === SESSIONS - Production Ready ===
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_AGE = 1209600
+SESSION_COOKIE_AGE = 1209600  # 14 days
 SESSION_SAVE_EVERY_REQUEST = True
-SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False  # Change to True in prod (with HTTPS)
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 # === AUTH ===
 LOGIN_URL = '/dashboard/login/'
