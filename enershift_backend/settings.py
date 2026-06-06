@@ -60,23 +60,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'enershift_backend.wsgi.application'
 
-# === DATABASE CONFIG ===
+# ==================== DATABASE CONFIG ====================
 import os
 import dj_database_url
+from pathlib import Path
 
-# Use SQLite locally for migrations, Postgres on Railway
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Railway uses DATABASE_URL. Locally we fall back to SQLite to avoid connection issues.
 if os.getenv('DATABASE_URL'):
     DATABASES = {
-        'default': dj_database_url.config(conn_max_age=600)
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
 else:
-    # Local development with SQLite
+    # Local development - Use SQLite (no external DB needed)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
+print(f"✅ DEBUG: Using database engine: {DATABASES['default']['ENGINE']}")
 
 # === STATIC FILES ===
 STATIC_URL = '/static/'
