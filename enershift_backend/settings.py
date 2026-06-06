@@ -9,9 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*'] if DEBUG else ['enershift.energy', 'www.enershift.energy', '.railway.app']
 
 SITE_ID = 1
 
@@ -60,15 +60,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'enershift_backend.wsgi.application'
 
-# ==================== DATABASE CONFIG ====================
-import os
-import dj_database_url
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Railway uses DATABASE_URL. Locally we fall back to SQLite to avoid connection issues.
-if os.getenv('DATABASE_URL'):
+# ==================== DATABASE CONFIG (Fixed for Local + Railway) ====================
+# Force SQLite locally to avoid connection issues during makemigrations
+if os.getenv('DATABASE_URL') and os.getenv('RAILWAY_ENVIRONMENT_NAME'):
     DATABASES = {
         'default': dj_database_url.config(
             conn_max_age=600,
@@ -76,7 +70,7 @@ if os.getenv('DATABASE_URL'):
         )
     }
 else:
-    # Local development - Use SQLite (no external DB needed)
+    # Local development - Use SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -96,7 +90,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600  # 14 days
 SESSION_SAVE_EVERY_REQUEST = True
-SESSION_COOKIE_SECURE = False  # Change to True in prod (with HTTPS)
+SESSION_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
@@ -107,8 +101,7 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
 # === EMAIL ===
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # For prod
-# Or use django-allauth + Resend/SendGrid later
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = 587
@@ -122,3 +115,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://www.enershift.energy',
     'https://*.railway.app'
 ]
+
+# Add this if you want better security in production later
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
