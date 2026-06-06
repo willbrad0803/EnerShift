@@ -48,15 +48,17 @@ def register(request):
                 current_site = get_current_site(request)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
                 token = default_token_generator.make_token(user)
+                # In register view
                 activation_link = f"https://{current_site.domain}/dashboard/activate/{uid}/{token}/"
 
                 send_mail(
-                    'Activate your EnerShift account',
-                    f"Click here to activate your account:\n\n{activation_link}",
-                    'noreply@enershift.energy',
-                    [user.email],
-                    fail_silently=True,
+                            'Activate your EnerShift account',
+                            f"""Hi,\n\nPlease click the link below to activate:\n\n{activation_link}\n\nLink expires in 7 days.""",
+                            DEFAULT_FROM_EMAIL,
+                            [user.email],
+                            fail_silently=False,
                 )
+                
                 return render(request, 'registration/account_activation_sent.html', {'email': user.email})
             except Exception as e:
                 messages.error(request, "This email is already registered.")
