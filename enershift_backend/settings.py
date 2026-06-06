@@ -60,16 +60,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'enershift_backend.wsgi.application'
 
-# === DATABASE - Force Railway Postgres ===
-if 'DATABASE_URL' in os.environ:
+# === DATABASE CONFIG ===
+import os
+import dj_database_url
+
+# Use SQLite locally for migrations, Postgres on Railway
+if os.getenv('DATABASE_URL'):
     DATABASES = {
-        'default': dj_database_url.parse(os.environ['DATABASE_URL'])
+        'default': dj_database_url.config(conn_max_age=600)
     }
-    DATABASES['default']['CONN_MAX_AGE'] = 600
-    DATABASES['default']['conn_health_checks'] = True
 else:
+    # Local development with SQLite
     DATABASES = {
-        'default': dj_database_url.config(default='sqlite:///db.sqlite3')
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
 
 # === STATIC FILES ===
