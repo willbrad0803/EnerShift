@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path('', views.dashboard_home, name='dashboard_home'),
     path('add-site/', views.add_site, name='add_site'),
+    path('site/<int:site_id>/add-log/', views.add_savings_log, name='add_savings_log'),
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout/', views.custom_logout, name='logout'),
     path('register/', views.register, name='register'),
