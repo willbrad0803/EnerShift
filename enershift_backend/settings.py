@@ -60,9 +60,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'enershift_backend.wsgi.application'
 
-# ==================== DATABASE CONFIG (Fixed for Local + Railway) ====================
-# Force SQLite locally to avoid connection issues during makemigrations
-if os.getenv('DATABASE_URL') and os.getenv('RAILWAY_ENVIRONMENT_NAME'):
+# ==================== DATABASE ====================
+if os.getenv('DATABASE_URL'):
     DATABASES = {
         'default': dj_database_url.config(
             conn_max_age=600,
@@ -70,7 +69,7 @@ if os.getenv('DATABASE_URL') and os.getenv('RAILWAY_ENVIRONMENT_NAME'):
         )
     }
 else:
-    # Local development - Use SQLite
+    # Local fallback
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -78,15 +77,13 @@ else:
         }
     }
 
-print(f"✅ DEBUG: Using database engine: {DATABASES['default']['ENGINE']}")
-
 # === STATIC FILES ===
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# === SESSIONS - Production Ready (Railway Optimized) ===
+# === SESSIONS - Fixed for Railway ===
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600          # 14 days
 SESSION_SAVE_EVERY_REQUEST = True
@@ -94,18 +91,10 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
-# Railway + Custom Domain secure cookie settings
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     CSRF_COOKIE_SAMESITE = 'Lax'
-    
-    # Important for Railway subdomains and custom domain
-    SESSION_COOKIE_DOMAIN = None  # Django will handle based on request
-    # Alternative: explicitly set if needed
-    # SESSION_COOKIE_DOMAIN = '.enershift.energy' if 'enershift.energy' in ALLOWED_HOSTS else '.railway.app'
-
-    # Tell Django we are behind a proxy (critical for Railway)
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # === AUTH ===
@@ -129,7 +118,6 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app'
 ]
 
-# Production security headers
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 31536000
