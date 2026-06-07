@@ -69,7 +69,6 @@ if os.getenv('DATABASE_URL'):
         )
     }
 else:
-    # Local fallback
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -83,7 +82,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# === SESSIONS - Fixed for Railway ===
+# === SESSIONS - Railway Optimized (Fixed) ===
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600          # 14 days
 SESSION_SAVE_EVERY_REQUEST = True
@@ -96,6 +95,7 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     CSRF_COOKIE_SAMESITE = 'Lax'
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # Let Django detect domain from request (best for Railway + custom domains)
 
 # === AUTH ===
 LOGIN_URL = '/dashboard/login/'
