@@ -86,62 +86,32 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-diff --git a/enershift_backend/settings.py b/enershift_backend/settings.py
-index abc1234..def5678 100644
---- a/enershift_backend/settings.py
-+++ b/enershift_backend/settings.py
-@@ -89,15 +89,32 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
- 
- # === SESSIONS - Production Ready (Railway Optimized) ===
- SESSION_ENGINE = 'django.contrib.sessions.backends.db'
--SESSION_COOKIE_AGE = 1209600  # 14 days
-+SESSION_COOKIE_AGE = 1209600          # 14 days
- SESSION_SAVE_EVERY_REQUEST = True
--SESSION_COOKIE_SECURE = not DEBUG
-+SESSION_COOKIE_HTTPONLY = True
-+SESSION_COOKIE_SAMESITE = 'Lax'
-+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-+
-+# Railway-specific secure cookie settings
-+if not DEBUG:
-+    SESSION_COOKIE_SECURE = True
-+    SESSION_COOKIE_DOMAIN = '.railway.app'   # Allows subdomains like xxx.railway.app
-+    # Also support custom domain
-+    if 'enershift.energy' in ALLOWED_HOSTS:
-+        SESSION_COOKIE_DOMAIN = '.enershift.energy'
-+
-+    CSRF_COOKIE_SECURE = True
-+    CSRF_COOKIE_SAMESITE = 'Lax'
-+    CSRF_TRUSTED_ORIGINS = [
-+        'https://*.railway.app',
-+        'https://enershift.energy',
-+        'https://www.enershift.energy',
-+    ]
-+
- SESSION_COOKIE_HTTPONLY = True
--SESSION_COOKIE_SAMESITE = 'Lax'
--SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-+
-+# Tell Django we're behind a secure proxy (Railway)
-+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
- 
- # === AUTH ===
- LOGIN_URL = '/dashboard/login/'
-@@ -120,8 +137,13 @@ CSRF_TRUSTED_ORIGINS = [
-     'https://enershift.energy',
-     'https://www.enershift.energy',
-     'https://*.railway.app'
- ]
- 
- # Production security headers
- if not DEBUG:
-     SECURE_SSL_REDIRECT = True
-     SECURE_HSTS_SECONDS = 31536000
-+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-+    SECURE_HSTS_PRELOAD = True
-+    SECURE_BROWSER_XSS_FILTER = True
-+    SECURE_CONTENT_TYPE_NOSNIFF = True
-+    X_FRAME_OPTIONS = 'DENY'
+# === SESSIONS - Production Ready (Railway Optimized) ===
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 1209600          # 14 days
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Railway + Custom Domain secure cookie settings
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_SAMESITE = 'Lax'
+    
+    # Important for Railway subdomains and custom domain
+    SESSION_COOKIE_DOMAIN = None  # Django will handle based on request
+    # Alternative: explicitly set if needed
+    # SESSION_COOKIE_DOMAIN = '.enershift.energy' if 'enershift.energy' in ALLOWED_HOSTS else '.railway.app'
+
+    # Tell Django we are behind a proxy (critical for Railway)
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# === AUTH ===
+LOGIN_URL = '/dashboard/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
 
 # === EMAIL ===
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend'
@@ -159,7 +129,12 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app'
 ]
 
-# Add this if you want better security in production later
+# Production security headers
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
