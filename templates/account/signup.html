@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-md mx-auto px-6 py-20">
+    <div class="bg-white rounded-3xl shadow-xl p-10">
+        <h2 class="text-3xl font-bold text-center mb-8">Create Account</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-2xl font-semibold mt-6">
+                Create Account
+            </button>
+        </form>
+        
+        <p class="text-center mt-6">
+            <a href="{% url 'account_login' %}" class="text-emerald-600 hover:underline">Already have an account? Login</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
