@@ -109,13 +109,12 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@enershift.energy')
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
-# Security
-ALLOWED_HOSTS = ['*']
-
+# === SECURITY FIXES ===
 CSRF_TRUSTED_ORIGINS = [
     'https://enershift.energy',
     'https://www.enershift.energy',
     'https://*.railway.app',
+    'http://*.railway.app',
 ]
 
 CSRF_COOKIE_SECURE = False
