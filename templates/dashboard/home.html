@@ -25,15 +25,14 @@
             {% for site in sites %}
             <div class="bg-white rounded-3xl shadow p-8">
                 <h3 class="text-2xl font-semibold">{{ site.name }}</h3>
-                <p class="text-gray-500">{{ site.postcode }} • {{ site.get_industry_type_display }}</p>
-                <p class="text-emerald-600 mt-6 font-medium">Next recommended shift: Tonight 2-5am</p>
+                <p class="text-gray-500">{{ site.postcode }} • {{ site.get_industry_type_display|default:"Industrial" }}</p>
             </div>
             {% endfor %}
         </div>
     {% else %}
         <div class="bg-white rounded-3xl shadow p-20 text-center">
             <h3 class="text-3xl font-semibold mb-4">No sites added yet</h3>
-            <p class="text-gray-600 mb-8">Add your first site to start receiving personalised forecasts and recommendations.</p>
+            <p class="text-gray-600 mb-8">Add your first site to get personalised recommendations.</p>
             <a href="{% url 'add_site' %}" class="inline-block bg-emerald-600 text-white px-10 py-4 rounded-2xl font-semibold">
                 + Add Your First Site
             </a>
@@ -48,6 +47,6 @@
 <script>
     const map = L.map('wind-map').setView([53.5, -2.5], 8);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-    L.marker([53.48, -2.24]).addTo(map).bindPopup("<b>Manchester Area</b><br>Strong winds expected tonight");
+    L.marker([53.48, -2.24]).addTo(map).bindPopup("Strong winds expected tonight");
 </script>
 {% endblock %}
