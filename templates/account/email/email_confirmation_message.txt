@@ -1,0 +1,8 @@
+Hi,
+
+Please click the link below to confirm your email address:
+
+{{ activate_url }}
+
+Thanks,
+The EnerShift Team
