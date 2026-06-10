@@ -1,27 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
-class Site(models.Model):
-    INDUSTRY_CHOICES = [
-        ('MANUFACTURING', 'Manufacturing'),
-        ('FOOD_PROCESSING', 'Food Processing'),
-        ('RETAIL', 'Retail / Supermarket'),
-        ('WAREHOUSE', 'Warehouse / Logistics'),
-        ('OTHER', 'Other'),
+class UserProfile(models.Model):
+    ROLE_CHOICES = [
+        ('CUSTOMER', 'Customer'),
+        ('STAFF', 'Staff'),
     ]
-
-    id = models.BigAutoField(primary_key=True)   # Explicit primary key
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sites')
-    name = models.CharField(max_length=200)
-    postcode = models.CharField(max_length=20)
-    industry_type = models.CharField(max_length=50, choices=INDUSTRY_CHOICES, default='OTHER')
-    address = models.TextField(blank=True, null=True)
-    flexible_loads = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='CUSTOMER')
+    company_name = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.name} ({self.postcode})"
+        return f"{self.user.email} - {self.role}"
 
-    class Meta:
-        ordering = ['-created_at']
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+    else:
+        instance.userprofile.save()
