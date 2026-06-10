@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Site
-from .forms import SiteForm  # We'll create this next
+from .forms import SiteForm
 
 
 @login_required
@@ -26,9 +26,7 @@ def add_site(request):
     return render(request, 'dashboard/add_site.html', {'form': form})
 
 
-@login_required
 def custom_logout(request):
-    # Allauth handles logout mostly, but we keep this for now
     from django.contrib.auth import logout
     logout(request)
     messages.success(request, "You have been logged out.")
