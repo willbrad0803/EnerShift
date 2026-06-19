@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Upload Half-Hourly Meter Data</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <select name="site_id" required>
+            {% for site in sites %}
+            <option value="{{ site.id }}">{{ site.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="file" name="csv_file" accept=".csv" required>
+        <button type="submit">Upload CSV</button>
+    </form>
+    <p>Expected columns: timestamp,consumption_kwh,export_kwh</p>
+</div>
+{% endblock %}
