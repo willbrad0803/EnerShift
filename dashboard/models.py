@@ -9,6 +9,7 @@ import uuid
 from decimal import Decimal
 
 class UserProfile(models.Model):
+    id = models.BigAutoField(primary_key=True)
     ROLE_CHOICES = [('CUSTOMER', 'Customer'), ('STAFF', 'Staff')]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='CUSTOMER')
@@ -25,6 +26,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 
 class Site(models.Model):
+    id = models.BigAutoField(primary_key=True)
     INDUSTRY_CHOICES = [
         ('MANUFACTURING', 'Manufacturing'), ('FOOD_PROCESSING', 'Food Processing'),
         ('RETAIL', 'Retail / Supermarket'), ('WAREHOUSE', 'Warehouse / Logistics'), ('OTHER', 'Other')
@@ -54,6 +56,7 @@ class Site(models.Model):
 
 
 class MeterReading(models.Model):
+    id = models.BigAutoField(primary_key=True)
     """Half-hourly data layer."""
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name='meter_readings')
     timestamp = models.DateTimeField(db_index=True)
@@ -70,6 +73,7 @@ class MeterReading(models.Model):
 
 
 class EnergyPrice(models.Model):
+    id = models.BigAutoField(primary_key=True)
     timestamp = models.DateTimeField(db_index=True)
     price_gbp_per_mwh = models.DecimalField(max_digits=12, decimal_places=4)
     price_type = models.CharField(max_length=50, choices=[('wholesale', 'Wholesale'), ('day_ahead', 'Day-Ahead')])
@@ -79,11 +83,13 @@ class EnergyPrice(models.Model):
 
 
 class WindForecast(models.Model):
+    id = models.BigAutoField(primary_key=True)
     timestamp = models.DateTimeField(db_index=True)
     forecast_mw = models.DecimalField(max_digits=12, decimal_places=2)
 
 
 class GridEvent(models.Model):
+    id = models.BigAutoField(primary_key=True)
     EVENT_TYPE_CHOICES = [('DFS', 'Demand Flexibility Service'), ('ENWL', 'ENWL')]
     event_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     title = models.CharField(max_length=255)
@@ -95,6 +101,7 @@ class GridEvent(models.Model):
 
 
 class OptimizationRecommendation(models.Model):
+    id = models.BigAutoField(primary_key=True)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name='recommendations')
     timestamp = models.DateTimeField(db_index=True)
     action_type = models.CharField(max_length=100)
