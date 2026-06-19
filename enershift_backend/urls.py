@@ -1,11 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.account.urls')),
+    path('accounts/', include('allauth.account.urls')),  # This must be first for allauth patterns
     path('dashboard/', include('dashboard.urls')),
     path('', TemplateView.as_view(template_name='public/index.html'), name='home'),
     path('about/', TemplateView.as_view(template_name='public/about.html'), name='about'),
