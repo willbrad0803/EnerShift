@@ -99,3 +99,9 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app',
 ]
 CSRF_COOKIE_SECURE = False
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 1209600  # 2 weeks
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_SECURE = False   # For local dev
+SESSION_COOKIE_SAMESITE = 'Lax'
