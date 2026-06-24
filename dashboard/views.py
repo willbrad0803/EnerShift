@@ -14,10 +14,7 @@ from django.utils import timezone
 @login_required
 def dashboard_home(request):
     sites = Site.objects.filter(user=request.user)
-    total_consumption = MeterReading.objects.filter(site__user=request.user).aggregate(total=Sum('consumption_kwh'))['total'] or 0
-    recommendations = OptimizationRecommendation.objects.filter(site__user=request.user).order_by('-timestamp')[:5]
-    context = {'sites': sites, 'total_consumption': total_consumption, 'recommendations': recommendations}
-    return render(request, 'dashboard/home.html', context)
+    return render(request, 'dashboard/home.html', {'sites': sites})
 
 
 @login_required
