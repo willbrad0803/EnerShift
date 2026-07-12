@@ -7,9 +7,12 @@ from django.http import JsonResponse
 from .models import Site, MeterReading, OptimizationRecommendation
 from .forms import SiteForm
 import csv
+import logging
 from decimal import Decimal
 from io import TextIOWrapper
 from django.utils import timezone
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def dashboard_home(request):
@@ -39,14 +42,17 @@ def upload_meter_data(request):
         csv_file = request.FILES['csv_file']
         site_id = request.POST.get('site_id')
         site = get_object_or_404(Site, id=site_id, user=request.user)
-        
+
         try:
             decoded = TextIOWrapper(csv_file, encoding='utf-8')
             reader = csv.DictReader(decoded)
             count = 0
+            error_count = 0
             for row in reader:
                 try:
                     ts = timezone.datetime.fromisoformat(row['timestamp'].replace('Z', '+00:00'))
+                    if timezone.is_naive(ts):
+                        ts = timezone.make_aware(ts)
                     MeterReading.objects.update_or_create(
                         site=site, timestamp=ts,
                         defaults={
@@ -56,14 +62,23 @@ def upload_meter_data(request):
                         }
                     )
                     count += 1
-                except Exception as e:  # Explicit per-row
-                    print(f"Row error: {e}")  # TODO: structured logging
+                except Exception:
+                    error_count += 1
+                    logger.warning("Row import failed for site %s", site.id, exc_info=True)
                     continue
-            messages.success(request, f"Imported {count} readings for {site.name}.")
+
+            if count:
+                msg = f"Imported {count} readings for {site.name}."
+                if error_count:
+                    msg += f" {error_count} row(s) were skipped due to errors."
+                messages.success(request, msg)
+            else:
+                messages.error(request, f"No readings were imported ({error_count} row(s) failed). Check the file format and try again.")
             return redirect('dashboard_home')
-        except Exception as e:
-            messages.error(request, f"Upload error: {str(e)}")
-            raise  # Never swallow
+        except Exception:
+            logger.exception("CSV upload failed for site %s", site.id)
+            messages.error(request, "We couldn't process that file. Please check it's a valid CSV and try again.")
+            return redirect('upload_meter_data')
     sites = Site.objects.filter(user=request.user)
     return render(request, 'dashboard/upload_meter.html', {'sites': sites})
 
