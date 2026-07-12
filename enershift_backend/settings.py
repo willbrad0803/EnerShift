@@ -44,7 +44,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+]
+
+# Required by django-allauth so that ACCOUNT_LOGIN_METHODS = {'email'} actually
+# works — without this, Django falls back to username-only ModelBackend auth.
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 ROOT_URLCONF = 'enershift_backend.urls'
@@ -66,6 +72,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'enershift_backend.wsgi.application'
+
+LANGUAGE_CODE = 'en-gb'
+TIME_ZONE = 'Europe/London'
+USE_I18N = True
+USE_TZ = True  # store aware UTC datetimes; without this the CSV importer's
+                # timezone-aware timestamps get silently reinterpreted
 
 DATABASES = {
     'default': dj_database_url.config(
